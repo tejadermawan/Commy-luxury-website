@@ -1,0 +1,2172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Commy — The Vault for Pre-Loved Luxury</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: '#0A0A0A',
+          coal: '#161616',
+          graphite: '#2A2A2A',
+          ash: '#F5F4EF',
+          bone: '#FAF9F6',
+          gold: '#B8945F',
+          'gold-soft': '#D4B886',
+          'gold-deep': '#8C6E3F',
+          sage: '#6B7A5A',
+        },
+        fontFamily: {
+          serif: ['Lora', 'Georgia', 'serif'],
+          sans: ['Inter', 'system-ui', 'sans-serif'],
+        },
+      }
+    }
+  }
+</script>
+<style>
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-optical-sizing: auto;       /* Inter automatically switches to Display variant at large sizes */
+    font-feature-settings: 'ss01', 'cv11';
+    background: #FAF9F6; color: #0A0A0A;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* Lora for short, important, large text only — headlines, hero stats, names, key numbers */
+  .serif {
+    font-family: 'Lora', Georgia, serif;
+    font-feature-settings: 'kern', 'liga';
+  }
+  .tracking-luxe { letter-spacing: 0.22em; }
+
+  /* Flat horizontal bar replacing the slanted serif hyphen in display headlines */
+  .flat-hyphen {
+    display: inline-block;
+    width: 0.34em;
+    height: 0.07em;
+    background: currentColor;
+    vertical-align: 0.34em;
+    margin: 0 0.06em;
+    border-radius: 1px;
+  }
+
+  /* ============ MINIMALIST E-COMMERCE DESIGN LANGUAGE ============ */
+  /* Aliased to keep existing markup working — now pure white/clean surfaces */
+  .glass {
+    background: #ffffff;
+    border: 1px solid rgba(10,10,10,0.08);
+  }
+  .glass-soft {
+    background: #FAF9F6;
+    border: 1px solid rgba(10,10,10,0.06);
+  }
+  .glass-dark {
+    background: #161616;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .glass-gold {
+    background: #B8945F;
+    color: #FAF9F6;
+    border: none;
+  }
+  .glass-chip {
+    background: rgba(10, 10, 10, 0.78);
+    color: #FAF9F6;
+    border: none;
+  }
+
+  /* Subtle e-commerce hover for product cards */
+  .product-card { transition: transform .3s ease, border-color .3s ease; }
+  .product-card:hover { transform: translateY(-2px); }
+
+  /* Very subtle vignette — keeps photos calm/minimal */
+  .photo-vignette { position: relative; }
+  .photo-vignette::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(180deg, transparent 70%, rgba(10,10,10,0.15) 100%);
+  }
+  .hairline { border-color: rgba(10,10,10,0.08); }
+  .hairline-light { border-color: rgba(255,255,255,0.10); }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(10,10,10,0.18); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(10,10,10,0.32); }
+
+  /* Gold shimmer underline */
+  .gold-underline { position: relative; }
+  .gold-underline::after {
+    content: ''; position: absolute; left: 0; bottom: -4px; width: 100%; height: 1px;
+    background: linear-gradient(90deg, transparent, #B8945F, transparent);
+    transform: scaleX(0); transition: transform .4s ease;
+  }
+  .gold-underline:hover::after { transform: scaleX(1); }
+
+  /* Verified pulse */
+  @keyframes verified-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(184,148,95,0.35); }
+    50% { box-shadow: 0 0 0 8px rgba(184,148,95,0); }
+  }
+  .verified-pulse { animation: verified-pulse 2.4s ease-in-out infinite; }
+
+  /* Modal */
+  .modal-backdrop { backdrop-filter: blur(10px); background: rgba(10,10,10,0.55); }
+  .modal-enter { animation: modalIn .4s cubic-bezier(.2,.7,.2,1); }
+  @keyframes modalIn { from { opacity:0; transform: translateY(16px) scale(.98);} to { opacity:1; transform: translateY(0) scale(1);} }
+
+  /* Mock product imagery via CSS */
+  .bag-mock {
+    background:
+      radial-gradient(ellipse at 30% 30%, #2A2A2A 0%, #0A0A0A 60%),
+      linear-gradient(135deg, #1a1a1a, #0A0A0A);
+    position: relative; overflow: hidden;
+  }
+  .bag-mock::before {
+    content: ''; position: absolute; inset: 18% 22%;
+    border-radius: 12px;
+    background:
+      repeating-linear-gradient(45deg, rgba(255,255,255,0.04) 0 14px, transparent 14px 28px),
+      linear-gradient(160deg, #1c1c1c 0%, #0e0e0e 100%);
+    box-shadow: inset 0 0 60px rgba(0,0,0,0.6), 0 30px 80px rgba(0,0,0,0.4);
+  }
+  .bag-mock::after {
+    content: ''; position: absolute; left: 50%; top: 35%; width: 56%; height: 4px;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, transparent, #B8945F 30%, #D4B886 50%, #B8945F 70%, transparent);
+    border-radius: 4px;
+    box-shadow: 0 0 16px rgba(212,184,134,0.5);
+  }
+  .bag-chain {
+    position: absolute; left: 50%; top: 12%; transform: translateX(-50%);
+    width: 60%; height: 60px;
+    border: 1.5px solid #B8945F; border-bottom: none; border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    opacity: 0.85;
+  }
+
+  .watch-mock {
+    background: radial-gradient(circle at 50% 40%, #1a1a1a, #050505);
+    position: relative; overflow: hidden;
+  }
+  .watch-mock::before {
+    content:''; position:absolute; left:50%; top:50%; width: 62%; aspect-ratio:1; transform: translate(-50%,-50%);
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 30%, #f4ecdc, #d9c8a0 55%, #8C6E3F 100%);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 0 0 6px #2a2a2a, inset 0 0 0 8px #B8945F;
+  }
+  .watch-mock::after {
+    content:''; position:absolute; left:50%; top:50%; width: 4px; height: 22%; transform: translate(-50%, -100%);
+    background:#0A0A0A; transform-origin: bottom center; transform: translate(-50%, -100%) rotate(40deg);
+  }
+
+  .scarf-mock {
+    background: linear-gradient(135deg, #B8945F 0%, #8C6E3F 50%, #B8945F 100%);
+    position: relative; overflow: hidden;
+  }
+  .scarf-mock::before {
+    content:''; position:absolute; inset:8%;
+    background:
+      repeating-linear-gradient(45deg, rgba(255,255,255,0.08) 0 4px, transparent 4px 24px),
+      repeating-linear-gradient(-45deg, rgba(0,0,0,0.10) 0 4px, transparent 4px 24px);
+    border: 1px solid rgba(0,0,0,0.2);
+  }
+
+  .heels-mock {
+    background: radial-gradient(ellipse at 50% 70%, #7a1f24 0%, #3a0a0c 80%);
+    position: relative; overflow: hidden;
+  }
+  .heels-mock::before {
+    content:''; position:absolute; left:30%; bottom:18%; width:40%; height:20%;
+    background: linear-gradient(180deg, #b22a2f, #5a0f12);
+    border-radius: 100% 100% 30% 30%;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+  }
+  .heels-mock::after {
+    content:''; position:absolute; left:55%; bottom:6%; width:6px; height:30%;
+    background: #2a0608; transform-origin: top; transform: rotate(8deg);
+  }
+
+  .coat-mock {
+    background: linear-gradient(160deg, #c9bba0 0%, #8a7d63 100%);
+    position: relative; overflow: hidden;
+  }
+  .coat-mock::before {
+    content:''; position:absolute; left:30%; top:20%; right:30%; bottom:10%;
+    background: linear-gradient(180deg, #b3a486, #6b5f47);
+    clip-path: polygon(20% 0, 80% 0, 100% 100%, 0 100%);
+  }
+
+  .ring-mock {
+    background: radial-gradient(circle at 50% 50%, #1a1a1a, #050505);
+    position: relative; overflow: hidden;
+  }
+  .ring-mock::before {
+    content:''; position:absolute; left:50%; top:50%; width:55%; aspect-ratio:1; transform: translate(-50%,-50%);
+    border-radius:50%; border: 10px solid #D4B886;
+    box-shadow: 0 0 30px rgba(212,184,134,0.4);
+  }
+  .ring-mock::after {
+    content:''; position:absolute; left:50%; top:32%; width: 18px; height:18px; transform: translateX(-50%);
+    background: radial-gradient(circle, #ffffff, #cce6ff 40%, #6aa3d4 100%);
+    border-radius:50%;
+    box-shadow: 0 0 16px #fff;
+  }
+
+  /* Raw photo mock (Before) — amateur bag-on-wood photo, poor lighting */
+  .raw-photo {
+    background:
+      /* uneven warm tungsten light from upper-right (typical bad indoor shot) */
+      radial-gradient(ellipse at 78% 25%, rgba(220,160,90,0.22) 0%, transparent 55%),
+      /* wood grain floor */
+      repeating-linear-gradient(87deg, #5a4a35 0 30px, #4d4030 30px 60px),
+      #3e3225;
+    position: relative; overflow: hidden;
+    filter: contrast(0.78) saturate(0.55) brightness(0.78);
+  }
+  /* The black quilted bag — rotated, off-center, like a careless phone shot */
+  .raw-photo::before {
+    content:''; position:absolute;
+    left:14%; top:20%; width:66%; height:58%;
+    background:
+      /* faint diamond quilting pattern */
+      repeating-linear-gradient(45deg, transparent 0 16px, rgba(255,255,255,0.035) 16px 17px),
+      repeating-linear-gradient(-45deg, transparent 0 16px, rgba(255,255,255,0.035) 16px 17px),
+      radial-gradient(ellipse at 30% 30%, #1e1a17 0%, #060403 75%);
+    transform: rotate(-4deg);
+    border-radius: 8px;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.55);
+  }
+  /* Gold chain glimpse + small clutter receipt corner */
+  .raw-photo::after {
+    content:''; position:absolute;
+    left:28%; top:15%; width:38%; height:11%;
+    border: 1.5px solid rgba(180,140,90,0.6);
+    border-bottom: none;
+    border-radius: 50% 50% 0 0;
+    transform: rotate(-4deg);
+    opacity: 0.75;
+  }
+  /* Cluttered background item — like a tossed receipt or hair-tie */
+  .raw-photo .clutter-1 {
+    position:absolute; right:8%; bottom:10%;
+    width:22%; height:5%;
+    background: #d4c8a8;
+    border-radius: 2px;
+    opacity: 0.45;
+    transform: rotate(8deg);
+  }
+  .raw-photo .clutter-2 {
+    position:absolute; left:6%; top:8%;
+    width: 12%; height: 12%;
+    background: radial-gradient(circle, rgba(140,100,60,0.5), transparent 70%);
+    border-radius: 50%;
+  }
+
+  /* Filter chip */
+  .chip { transition: all .2s ease; }
+  .chip[aria-pressed="true"] {
+    background: #0A0A0A; color: #FAF9F6; border-color: #0A0A0A;
+  }
+
+  /* Step bar */
+  .step-line { height: 2px; background: rgba(10,10,10,0.12); position: relative; }
+  .step-line .fill {
+    position:absolute; left:0; top:0; bottom:0; background: linear-gradient(90deg, #B8945F, #D4B886);
+    transition: width .6s cubic-bezier(.2,.7,.2,1);
+  }
+
+  .badge-gold { background: linear-gradient(135deg, #B8945F, #8C6E3F); color: #FAF9F6; }
+
+  /* Tab underline — selected text matches the gold badge count */
+  .tab[aria-selected="true"] { color:#D4B886; }
+  .tab[aria-selected="true"] .tab-line { transform: scaleX(1); }
+  .tab-line { transform: scaleX(0); transform-origin: left; transition: transform .35s ease; }
+
+  /* Hide scrollbar for filter sidebar inner */
+  .no-scrollbar::-webkit-scrollbar { display:none; }
+
+  /* Tooltip */
+  .has-tip { position: relative; }
+  .tip {
+    position:absolute; left:50%; transform: translate(-50%, 8px);
+    top:100%; min-width: 260px;
+    background: rgba(10,10,10,0.78);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    color:#FAF9F6;
+    padding:14px 16px; border-radius: 10px; font-size: 12px; line-height: 1.5;
+    opacity:0; pointer-events:none; transition: opacity .2s ease, transform .2s ease;
+    z-index: 30; border: 1px solid rgba(212,184,134,0.3);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+  }
+  .has-tip:hover .tip, .has-tip:focus-within .tip { opacity:1; transform: translate(-50%, 12px); pointer-events:auto; }
+  .tip::before {
+    content:''; position:absolute; left:50%; top:-6px; width:10px; height:10px; transform: translateX(-50%) rotate(45deg);
+    background:#0A0A0A; border-left:1px solid rgba(212,184,134,0.3); border-top:1px solid rgba(212,184,134,0.3);
+  }
+
+  /* Fade-in on scroll-ish (simple) */
+  .reveal { opacity:0; transform: translateY(10px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in { opacity:1; transform: translateY(0); }
+
+  /* Counter offer animation */
+  .pop { animation: pop .35s ease; }
+  @keyframes pop { 0%{transform: scale(.96); opacity:0;} 100%{transform: scale(1); opacity:1;} }
+
+  /* Buttons */
+  .btn-ink {
+    background:#0A0A0A; color:#FAF9F6; transition: all .25s ease;
+    letter-spacing: 0.14em; text-transform: uppercase; font-size:12px; font-weight:500;
+  }
+  .btn-ink:hover { background:#2A2A2A; }
+  .btn-gold {
+    background: linear-gradient(135deg, #B8945F, #8C6E3F); color:#FAF9F6;
+    letter-spacing: 0.14em; text-transform: uppercase; font-size:12px; font-weight:500;
+    transition: all .25s ease;
+  }
+  .btn-gold:hover { filter: brightness(1.08); box-shadow: 0 10px 30px rgba(184,148,95,0.35); }
+  .btn-ghost {
+    background: transparent; color:#0A0A0A; border:1px solid rgba(10,10,10,0.18);
+    letter-spacing: 0.14em; text-transform: uppercase; font-size:12px; font-weight:500;
+    transition: all .2s ease;
+  }
+  .btn-ghost:hover { border-color:#0A0A0A; background:#0A0A0A; color:#FAF9F6; }
+
+  /* Marquee */
+  .marquee { display:flex; gap:48px; animation: marquee 30s linear infinite; }
+  @keyframes marquee { from { transform: translateX(0);} to { transform: translateX(-50%);} }
+
+  /* Slider track for offer */
+  input[type="range"].lux {
+    -webkit-appearance: none; width:100%; height: 4px; background: rgba(10,10,10,0.12); border-radius:2px;
+  }
+  input[type="range"].lux::-webkit-slider-thumb {
+    -webkit-appearance:none; width:20px; height:20px; border-radius:50%;
+    background:#0A0A0A; border: 3px solid #D4B886; cursor:pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translate(-50%, 80px);
+    background:#0A0A0A; color:#FAF9F6; padding: 14px 20px; border-radius: 10px;
+    border: 1px solid rgba(212,184,134,0.4); z-index: 100; opacity:0;
+    transition: transform .35s cubic-bezier(.2,.7,.2,1), opacity .25s ease;
+    font-size: 13px; letter-spacing: 0.04em;
+  }
+  .toast.show { transform: translate(-50%, 0); opacity:1; }
+
+  /* AI sparkle */
+  @keyframes sparkle {
+    0%,100% { opacity: .4; transform: scale(1);}
+    50% { opacity: 1; transform: scale(1.2);}
+  }
+  .sparkle { animation: sparkle 1.6s ease-in-out infinite; }
+</style>
+</head>
+<body class="bg-bone text-ink">
+
+<!-- ANNOUNCEMENT BAR -->
+<div class="bg-ink text-bone overflow-hidden">
+  <div class="relative">
+    <div class="marquee py-2 whitespace-nowrap text-[11px] tracking-luxe uppercase">
+      <span>Authenticated by master horologists & atelier specialists</span>
+      <span>·</span>
+      <span>Complimentary worldwide insured shipping over €1,000</span>
+      <span>·</span>
+      <span>Carbon-neutral circular luxury since 2019</span>
+      <span>·</span>
+      <span>The Vault · 47,000+ pieces · 89 ateliers verified</span>
+      <span>·</span>
+      <span>Authenticated by master horologists & atelier specialists</span>
+      <span>·</span>
+      <span>Complimentary worldwide insured shipping over €1,000</span>
+      <span>·</span>
+      <span>Carbon-neutral circular luxury since 2019</span>
+      <span>·</span>
+      <span>The Vault · 47,000+ pieces · 89 ateliers verified</span>
+      <span>·</span>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="sticky top-0 z-40 bg-bone/85 backdrop-blur-md border-b hairline">
+  <div class="max-w-[1400px] mx-auto px-6 lg:px-10">
+    <div class="grid grid-cols-2 lg:grid-cols-3 items-center py-5 gap-4">
+      <!-- Left nav -->
+      <nav class="hidden lg:flex items-center gap-5 xl:gap-6 text-[11px] tracking-[0.18em] uppercase">
+        <a href="#vault" class="gold-underline whitespace-nowrap">The Vault</a>
+        <a href="#pre-loved" class="gold-underline whitespace-nowrap">Pre-Loved</a>
+        <a href="#deadstock" class="gold-underline whitespace-nowrap">Deadstock</a>
+        <a href="#ateliers" class="gold-underline whitespace-nowrap">Ateliers</a>
+      </nav>
+
+      <!-- Mobile menu trigger (only visible below lg) -->
+      <button class="lg:hidden flex items-center gap-2 text-[11px] tracking-luxe uppercase justify-self-start" aria-label="Menu">
+        <i data-lucide="menu" class="w-5 h-5"></i>
+      </button>
+
+      <!-- Logo (centered via grid column) -->
+      <a href="#" class="flex items-baseline gap-2 justify-self-center">
+        <span class="serif text-3xl lg:text-4xl tracking-tight leading-none">Commy</span>
+      </a>
+
+      <!-- Right nav -->
+      <div class="flex items-center gap-4 lg:gap-5 justify-self-end">
+        <button class="hidden lg:flex items-center gap-1.5 text-[11px] tracking-[0.18em] uppercase gold-underline" onclick="showTab('dashboard')">
+          <i data-lucide="user" class="w-4 h-4"></i> <span>Profile</span>
+        </button>
+        <button class="hidden md:flex items-center gap-1.5 text-[11px] tracking-[0.18em] uppercase gold-underline">
+          <i data-lucide="search" class="w-4 h-4"></i> <span>Search</span>
+        </button>
+        <button class="md:hidden" aria-label="Search">
+          <i data-lucide="search" class="w-5 h-5"></i>
+        </button>
+        <button class="relative" aria-label="Wishlist">
+          <i data-lucide="heart" class="w-5 h-5"></i>
+        </button>
+        <button class="relative flex items-center" aria-label="Cart">
+          <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+          <span class="text-[10px] absolute -top-1 -right-2 bg-gold text-bone rounded-full w-4 h-4 flex items-center justify-center">2</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="relative overflow-hidden">
+  <div class="max-w-[1400px] mx-auto px-6 lg:px-10 pt-16 pb-12 lg:pt-24 lg:pb-20">
+    <div class="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+      <!-- LEFT: copy -->
+      <div class="lg:col-span-7">
+        <div class="text-[11px] tracking-luxe uppercase text-gold-deep mb-6 flex items-center gap-3">
+          <span class="w-10 h-px bg-gold-deep"></span> Chapter 01 · Spring Edit MMXXVI
+        </div>
+        <h1 class="serif text-5xl md:text-6xl lg:text-7xl xl:text-[80px] leading-[1.04] tracking-tight">
+          The vault for<br/>
+          <span class="text-gold-deep">pre<span class="flat-hyphen"></span>loved</span> luxury,<br/>
+          authenticated to the stitch.
+        </h1>
+        <p class="mt-8 max-w-xl text-graphite/75 text-[15px] leading-relaxed">
+          A peer-to-peer maison for vintage Chanel, deadstock Hermès, and storied timepieces — every consignment passes through our atelier of horologists and leather specialists before it reaches your door.
+        </p>
+        <div class="mt-10 flex flex-wrap gap-3">
+          <a href="#product" class="btn-ink px-7 py-4 inline-flex items-center gap-2">Enter the Vault <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+          <a href="#sell" class="btn-ghost px-7 py-4 inline-flex items-center gap-2">Consign a Piece</a>
+        </div>
+
+        <!-- Stats moved here, beneath the headline -->
+        <div class="mt-12 grid grid-cols-3 gap-6 max-w-xl">
+          <div>
+            <div class="serif text-3xl lg:text-4xl text-ink leading-none">47k+</div>
+            <div class="text-[9.5px] tracking-[0.16em] uppercase text-graphite/60 mt-2 whitespace-nowrap">Pieces in vault</div>
+          </div>
+          <div class="border-x hairline px-4">
+            <div class="serif text-3xl lg:text-4xl text-ink leading-none">99.4<span class="text-lg">%</span></div>
+            <div class="text-[9.5px] tracking-[0.16em] uppercase text-graphite/60 mt-2 whitespace-nowrap">Authentication rate</div>
+          </div>
+          <div>
+            <div class="serif text-3xl lg:text-4xl text-ink leading-none">72h</div>
+            <div class="text-[9.5px] tracking-[0.16em] uppercase text-graphite/60 mt-2 whitespace-nowrap">Avg. atelier review</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: editorial image composition (cleaner hierarchy) -->
+      <div class="lg:col-span-5 relative">
+        <!-- LEVEL 1: dominant hero image -->
+        <div class="relative aspect-[4/5] w-full">
+          <!-- Corner frame ornaments -->
+          <span class="absolute -top-3 -left-3 w-10 h-10 border-t border-l border-gold-deep z-20"></span>
+          <span class="absolute -bottom-3 -right-3 w-10 h-10 border-b border-r border-gold-deep z-20"></span>
+
+          <!-- Main image -->
+          <div class="bag-mock absolute inset-0 shadow-xl overflow-hidden photo-vignette">
+            <div class="bag-chain"></div>
+            <img src="https://images.unsplash.com/photo-1591348278863-a8fb3887e2aa?w=900&q=85&auto=format&fit=crop"
+                 alt="Vintage Chanel Double Flap Bag"
+                 loading="lazy"
+                 onerror="this.remove()"
+                 class="absolute inset-0 w-full h-full object-cover" />
+
+            <!-- LEVEL 2 (top overlay strip): eyebrow + wishlist -->
+            <div class="absolute top-5 left-5 right-5 flex items-start justify-between z-10">
+              <span class="glass-gold text-[10px] tracking-luxe uppercase px-3 py-1.5 rounded-full inline-flex items-center gap-1.5">
+                <i data-lucide="badge-check" class="w-3 h-3"></i> Featured Lot · 0247
+              </span>
+              <button class="glass w-10 h-10 rounded-full flex items-center justify-center hover:bg-bone transition" aria-label="Wishlist">
+                <i data-lucide="heart" class="w-4 h-4"></i>
+              </button>
+            </div>
+
+            <!-- LEVEL 4 (decorative collage): watch thumbnail -->
+            <div class="absolute -top-6 -right-6 hidden md:block z-20">
+              <div class="watch-mock w-24 h-24 lg:w-28 lg:h-28 shadow-2xl border-4 border-bone overflow-hidden relative">
+                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=85&auto=format&fit=crop"
+                     alt="Vintage Rolex"
+                     loading="lazy"
+                     onerror="this.remove()"
+                     class="absolute inset-0 w-full h-full object-cover" />
+              </div>
+            </div>
+          </div>
+
+          <!-- LEVEL 3: consolidated product card (the ONE info anchor) -->
+          <div class="glass absolute -bottom-8 -left-6 right-12 shadow-2xl z-20">
+            <div class="p-5">
+              <!-- Seller + verification (replaces the old eyebrow row) -->
+              <div class="flex items-center justify-between gap-3 mb-3">
+                <div class="flex items-center gap-2 min-w-0">
+                  <img src="https://i.pravatar.cc/60?img=12" alt="Alex M." class="w-7 h-7 rounded-full object-cover ring-1 ring-gold-soft/50 flex-shrink-0" />
+                  <div class="min-w-0">
+                    <div class="text-[9px] tracking-luxe uppercase text-graphite/55 leading-none">Listed by</div>
+                    <div class="text-[12px] font-medium leading-tight mt-0.5 truncate">Alex M. <span class="text-gold-deep">★ 4.9</span></div>
+                  </div>
+                </div>
+                <span class="text-[9px] tracking-luxe uppercase text-sage flex items-center gap-1 flex-shrink-0">
+                  <i data-lucide="shield-check" class="w-3 h-3"></i> Verified
+                </span>
+              </div>
+
+              <div class="serif text-2xl leading-tight">Vintage Chanel Double Flap</div>
+              <div class="text-[11px] text-graphite/60 mt-0.5">Medium · Quilted Lambskin · c. 1994</div>
+
+              <div class="mt-4 pt-4 border-t hairline flex items-end justify-between">
+                <div>
+                  <div class="text-[9px] tracking-luxe uppercase text-graphite/55">Listed at</div>
+                  <div class="serif text-3xl leading-none mt-1">€6,850</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-[9px] tracking-luxe uppercase text-graphite/55">Condition</div>
+                  <div class="serif text-xl leading-none mt-1">9.2<span class="text-xs text-graphite/40">/10</span></div>
+                </div>
+              </div>
+            </div>
+            <!-- Footer micro-bar: trust signals -->
+            <div class="border-t border-white/30 px-5 py-2.5 bg-white/30 flex items-center justify-between text-[10px] text-graphite/70">
+              <span class="flex items-center gap-1.5"><i data-lucide="lock" class="w-3 h-3 text-gold-deep"></i> Escrow</span>
+              <span class="flex items-center gap-1.5"><i data-lucide="truck" class="w-3 h-3 text-gold-deep"></i> Insured</span>
+              <span class="flex items-center gap-1.5"><i data-lucide="rotate-ccw" class="w-3 h-3 text-gold-deep"></i> 14-day</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Trust protocol band (full width below the hero) -->
+    <div class="glass mt-20 lg:mt-24 px-6 py-6 grid md:grid-cols-3 gap-6 items-center">
+      <div class="flex items-center gap-3 text-[11px] tracking-luxe uppercase text-gold-deep">
+        <i data-lucide="shield-check" class="w-4 h-4"></i> Commy Trust Protocol
+      </div>
+      <p class="serif text-[20px] leading-snug md:col-span-1">Funds held in escrow until specialists confirm authenticity.</p>
+      <div class="flex items-center gap-2 text-[11px] text-graphite/70 md:justify-end">
+        <i data-lucide="check" class="w-3 h-3 text-gold-deep"></i> 100% buyer protection on every transaction
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN GRID: FILTER + FEED + PRODUCT -->
+<main id="vault" class="max-w-[1400px] mx-auto px-6 lg:px-10 pb-24">
+  <!-- Section header -->
+  <div class="flex items-end justify-between flex-wrap gap-6 mb-8 border-b hairline pb-6">
+    <div>
+      <div class="text-[10px] tracking-luxe uppercase text-gold-deep mb-2">Curated · 2,847 lots</div>
+      <h2 class="serif text-4xl md:text-5xl">The Atelier Edit</h2>
+    </div>
+    <div class="flex items-center gap-3">
+      <button class="btn-ghost px-4 py-3 inline-flex items-center gap-2" id="filterToggle">
+        <i data-lucide="sliders-horizontal" class="w-4 h-4"></i> Refine
+      </button>
+      <div class="relative">
+        <select class="appearance-none btn-ghost pl-4 pr-10 py-3 cursor-pointer">
+          <option>Curator's Pick</option>
+          <option>Recently Vaulted</option>
+          <option>Price · High to Low</option>
+          <option>Price · Low to High</option>
+          <option>Rarest First</option>
+        </select>
+        <i data-lucide="chevron-down" class="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid lg:grid-cols-12 gap-10">
+
+    <!-- ===================== SIDEBAR FILTER ===================== -->
+    <aside class="lg:col-span-3">
+      <div class="glass sticky top-[88px]" id="filterPanel">
+        <div class="flex items-center justify-between p-5 border-b hairline">
+          <div>
+            <div class="text-[10px] tracking-luxe uppercase text-gold-deep">Refinement</div>
+            <h3 class="serif text-2xl">Filters</h3>
+          </div>
+          <button class="text-[11px] tracking-luxe uppercase text-graphite/60 hover:text-ink" onclick="clearFilters()">Reset</button>
+        </div>
+
+        <!-- Active filters -->
+        <div class="p-5 border-b hairline">
+          <div class="text-[10px] tracking-luxe uppercase text-graphite/60 mb-3">Active Selections <span id="activeCount" class="text-gold-deep">(0)</span></div>
+          <div id="activePills" class="flex flex-wrap gap-2 min-h-[28px]">
+            <span class="text-[11px] text-graphite/50 italic">None — refine to begin</span>
+          </div>
+        </div>
+
+        <div class="max-h-[640px] overflow-auto no-scrollbar">
+
+          <!-- Brand -->
+          <div class="filter-group border-b hairline">
+            <button class="w-full flex items-center justify-between p-5 text-left" onclick="toggleGroup(this)" aria-expanded="true">
+              <span class="serif text-lg">Maison</span>
+              <i data-lucide="minus" class="w-4 h-4 indicator"></i>
+            </button>
+            <div class="px-5 pb-5 space-y-2 group-body">
+              <input type="text" placeholder="Search maison…" class="w-full text-sm bg-transparent border-b hairline py-2 focus:outline-none focus:border-ink placeholder:text-graphite/40 mb-3" />
+              <div class="space-y-1.5 max-h-48 overflow-y-auto pr-2">
+                <label class="flex items-center justify-between text-sm cursor-pointer hover:text-gold-deep">
+                  <span class="flex items-center gap-2"><input type="checkbox" data-filter="brand" value="Chanel" class="filter-input accent-ink" checked> Chanel</span>
+                  <span class="text-[11px] text-graphite/50">412</span>
+                </label>
+                <label class="flex items-center justify-between text-sm cursor-pointer hover:text-gold-deep">
+                  <span class="flex items-center gap-2"><input type="checkbox" data-filter="brand" value="Hermès" class="filter-input accent-ink"> Hermès</span>
+                  <span class="text-[11px] text-graphite/50">387</span>
+                </label>
+                <label class="flex items-center justify-between text-sm cursor-pointer hover:text-gold-deep">
+                  <span class="flex items-center gap-2"><input type="checkbox" data-filter="brand" value="Rolex" class="filter-input accent-ink"> Rolex</span>
+                  <span class="text-[11px] text-graphite/50">293</span>
+                </label>
+                <label class="flex items-center justify-between text-sm cursor-pointer hover:text-gold-deep">
+                  <span class="flex items-center gap-2"><input type="checkbox" data-filter="brand" value="Cartier" class="filter-input accent-ink"> Cartier</span>
+                  <span class="text-[11px] text-graphite/50">241</span>
+                </label>
+                <label class="flex items-center justify-between text-sm cursor-pointer hover:text-gold-deep">
+                  <span class="flex items-center gap-2"><input type="checkbox" data-filter="brand" value="Louis Vuitton" class="filter-input accent-ink"> Louis Vuitton</span>
+                  <span class="text-[11px] text-graphite/50">312</span>
+                </label>
+                <label class="flex items-center justify-between text-sm cursor-pointer hover:text-gold-deep">
+                  <span class="flex items-center gap-2"><input type="checkbox" data-filter="brand" value="Dior" class="filter-input accent-ink"> Dior</span>
+                  <span class="text-[11px] text-graphite/50">189</span>
+                </label>
+                <label class="flex items-center justify-between text-sm cursor-pointer hover:text-gold-deep">
+                  <span class="flex items-center gap-2"><input type="checkbox" data-filter="brand" value="Saint Laurent" class="filter-input accent-ink"> Saint Laurent</span>
+                  <span class="text-[11px] text-graphite/50">156</span>
+                </label>
+                <label class="flex items-center justify-between text-sm cursor-pointer hover:text-gold-deep">
+                  <span class="flex items-center gap-2"><input type="checkbox" data-filter="brand" value="Bottega Veneta" class="filter-input accent-ink"> Bottega Veneta</span>
+                  <span class="text-[11px] text-graphite/50">98</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Condition -->
+          <div class="filter-group border-b hairline">
+            <button class="w-full flex items-center justify-between p-5 text-left" onclick="toggleGroup(this)" aria-expanded="true">
+              <span class="serif text-lg">Condition</span>
+              <i data-lucide="minus" class="w-4 h-4 indicator"></i>
+            </button>
+            <div class="px-5 pb-5 group-body">
+              <div class="grid grid-cols-1 gap-2">
+                <button class="chip text-left text-[12px] tracking-wide px-3 py-2.5 border hairline" aria-pressed="false" data-filter="condition" data-value="Pristine">
+                  <div class="flex items-center justify-between">
+                    <span class="font-medium">Pristine</span>
+                    <span class="text-[10px] tracking-luxe uppercase opacity-70">10/10 · NWT</span>
+                  </div>
+                  <div class="text-[10px] opacity-60 mt-0.5">Unworn, original tags & dust bag</div>
+                </button>
+                <button class="chip text-left text-[12px] tracking-wide px-3 py-2.5 border hairline" aria-pressed="true" data-filter="condition" data-value="Excellent">
+                  <div class="flex items-center justify-between">
+                    <span class="font-medium">Excellent</span>
+                    <span class="text-[10px] tracking-luxe uppercase opacity-70">9/10</span>
+                  </div>
+                  <div class="text-[10px] opacity-60 mt-0.5">Minor signs of careful wear</div>
+                </button>
+                <button class="chip text-left text-[12px] tracking-wide px-3 py-2.5 border hairline" aria-pressed="false" data-filter="condition" data-value="Gently Used">
+                  <div class="flex items-center justify-between">
+                    <span class="font-medium">Gently Used</span>
+                    <span class="text-[10px] tracking-luxe uppercase opacity-70">7-8/10</span>
+                  </div>
+                  <div class="text-[10px] opacity-60 mt-0.5">Visible patina, fully functional</div>
+                </button>
+                <button class="chip text-left text-[12px] tracking-wide px-3 py-2.5 border hairline" aria-pressed="false" data-filter="condition" data-value="Vintage">
+                  <div class="flex items-center justify-between">
+                    <span class="font-medium">Vintage Patina</span>
+                    <span class="text-[10px] tracking-luxe uppercase opacity-70">Storied</span>
+                  </div>
+                  <div class="text-[10px] opacity-60 mt-0.5">Character of age, pre-2000</div>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Authentication -->
+          <div class="filter-group border-b hairline">
+            <button class="w-full flex items-center justify-between p-5 text-left" onclick="toggleGroup(this)" aria-expanded="true">
+              <span class="serif text-lg flex items-center gap-2">Authentication <i data-lucide="shield-check" class="w-4 h-4 text-gold-deep"></i></span>
+              <i data-lucide="minus" class="w-4 h-4 indicator"></i>
+            </button>
+            <div class="px-5 pb-5 group-body space-y-2">
+              <label class="flex items-center justify-between text-sm cursor-pointer p-3 bg-ink text-bone rounded">
+                <span class="flex items-center gap-2">
+                  <input type="checkbox" data-filter="auth" value="Verified Only" class="filter-input accent-gold" checked>
+                  <span>Commy-Verified Only</span>
+                </span>
+                <i data-lucide="badge-check" class="w-4 h-4 text-gold-soft"></i>
+              </label>
+              <label class="flex items-center justify-between text-sm cursor-pointer hover:text-gold-deep">
+                <span class="flex items-center gap-2"><input type="checkbox" data-filter="auth" value="With Receipt" class="filter-input accent-ink"> Original Receipt</span>
+                <span class="text-[11px] text-graphite/50">1,204</span>
+              </label>
+              <label class="flex items-center justify-between text-sm cursor-pointer hover:text-gold-deep">
+                <span class="flex items-center gap-2"><input type="checkbox" data-filter="auth" value="Box & Papers" class="filter-input accent-ink"> Box & Papers</span>
+                <span class="text-[11px] text-graphite/50">892</span>
+              </label>
+              <label class="flex items-center justify-between text-sm cursor-pointer hover:text-gold-deep">
+                <span class="flex items-center gap-2"><input type="checkbox" data-filter="auth" value="Provenance" class="filter-input accent-ink"> Documented Provenance</span>
+                <span class="text-[11px] text-graphite/50">347</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Size -->
+          <div class="filter-group border-b hairline">
+            <button class="w-full flex items-center justify-between p-5 text-left" onclick="toggleGroup(this)" aria-expanded="true">
+              <span class="serif text-lg">Size</span>
+              <i data-lucide="minus" class="w-4 h-4 indicator"></i>
+            </button>
+            <div class="px-5 pb-5 group-body">
+              <div class="text-[10px] tracking-luxe uppercase text-graphite/60 mb-2">Bags</div>
+              <div class="grid grid-cols-4 gap-2 mb-4">
+                <button class="chip text-[11px] py-2 border hairline" aria-pressed="false" data-filter="size" data-value="Mini">Mini</button>
+                <button class="chip text-[11px] py-2 border hairline" aria-pressed="false" data-filter="size" data-value="Small">Small</button>
+                <button class="chip text-[11px] py-2 border hairline" aria-pressed="true" data-filter="size" data-value="Medium">Med</button>
+                <button class="chip text-[11px] py-2 border hairline" aria-pressed="false" data-filter="size" data-value="Large">Large</button>
+              </div>
+              <div class="text-[10px] tracking-luxe uppercase text-graphite/60 mb-2">Ready-to-Wear</div>
+              <div class="grid grid-cols-6 gap-2">
+                <button class="chip text-[11px] py-2 border hairline" aria-pressed="false" data-filter="size" data-value="XS">XS</button>
+                <button class="chip text-[11px] py-2 border hairline" aria-pressed="false" data-filter="size" data-value="S">S</button>
+                <button class="chip text-[11px] py-2 border hairline" aria-pressed="false" data-filter="size" data-value="M">M</button>
+                <button class="chip text-[11px] py-2 border hairline" aria-pressed="false" data-filter="size" data-value="L">L</button>
+                <button class="chip text-[11px] py-2 border hairline" aria-pressed="false" data-filter="size" data-value="XL">XL</button>
+                <button class="chip text-[11px] py-2 border hairline" aria-pressed="false" data-filter="size" data-value="XXL">XXL</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Price -->
+          <div class="filter-group">
+            <button class="w-full flex items-center justify-between p-5 text-left" onclick="toggleGroup(this)" aria-expanded="true">
+              <span class="serif text-lg">Price</span>
+              <i data-lucide="minus" class="w-4 h-4 indicator"></i>
+            </button>
+            <div class="px-5 pb-6 group-body">
+              <div class="flex items-center justify-between text-[12px] mb-3">
+                <span id="priceMinLabel">€500</span>
+                <span class="text-graphite/50">to</span>
+                <span id="priceMaxLabel">€8,500</span>
+              </div>
+              <input type="range" min="0" max="10000" value="8500" class="lux" id="priceSlider" oninput="updatePrice(this.value)">
+              <div class="grid grid-cols-2 gap-2 mt-4">
+                <button class="chip text-[10px] tracking-luxe uppercase py-2 border hairline" onclick="setPrice(1000)" aria-pressed="false">Under €1k</button>
+                <button class="chip text-[10px] tracking-luxe uppercase py-2 border hairline" onclick="setPrice(5000)" aria-pressed="false">Under €5k</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-5 border-t hairline bg-ink text-bone">
+          <button class="w-full btn-gold py-3" onclick="applyFilters()">
+            Apply · View <span id="resultCount">847</span> Pieces
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===================== MAIN COL ===================== -->
+    <div class="lg:col-span-9 space-y-16">
+
+      <!-- ============= PRODUCT DETAIL PAGE ============= -->
+      <section id="product" class="bg-white border hairline">
+        <div class="grid lg:grid-cols-2 gap-0">
+          <!-- Image gallery -->
+          <div class="relative bg-ash p-8 lg:p-12">
+            <div class="flex items-center gap-2 mb-6">
+              <span class="glass-gold text-[10px] tracking-luxe uppercase px-3 py-1.5 rounded-full inline-flex items-center gap-1.5">
+                <i data-lucide="badge-check" class="w-3 h-3"></i> Commy-Verified
+              </span>
+              <span class="glass-chip text-[10px] tracking-luxe uppercase px-3 py-1.5 rounded-full">Rare</span>
+            </div>
+            <div class="bag-mock aspect-[4/5] rounded-sm shadow-xl relative overflow-hidden">
+              <div class="bag-chain"></div>
+              <img src="https://images.unsplash.com/photo-1591348278863-a8fb3887e2aa?w=900&q=85&auto=format&fit=crop"
+                   alt="Vintage Chanel Double Flap Bag"
+                   loading="lazy"
+                   onerror="this.remove()"
+                   class="absolute inset-0 w-full h-full object-cover" />
+              <button class="absolute top-4 right-4 z-10 w-10 h-10 bg-bone rounded-full flex items-center justify-center hover:scale-105 transition">
+                <i data-lucide="heart" class="w-4 h-4"></i>
+              </button>
+              <button class="absolute bottom-4 right-4 z-10 w-10 h-10 bg-bone rounded-full flex items-center justify-center hover:scale-105 transition">
+                <i data-lucide="maximize-2" class="w-4 h-4"></i>
+              </button>
+            </div>
+            <div class="grid grid-cols-5 gap-2 mt-6">
+              <div class="bag-mock aspect-square cursor-pointer ring-2 ring-ink relative overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1591348278863-a8fb3887e2aa?w=200&q=80&auto=format&fit=crop" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" alt="" />
+              </div>
+              <div class="bag-mock aspect-square cursor-pointer opacity-70 hover:opacity-100 transition relative overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1564594985645-4427056e22e2?w=200&q=80&auto=format&fit=crop" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" alt="" />
+              </div>
+              <div class="bag-mock aspect-square cursor-pointer opacity-70 hover:opacity-100 transition relative overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=200&q=80&auto=format&fit=crop" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" alt="" />
+              </div>
+              <div class="bag-mock aspect-square cursor-pointer opacity-70 hover:opacity-100 transition relative overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1606522754091-a3bbf9ad4cb3?w=200&q=80&auto=format&fit=crop" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" alt="" />
+              </div>
+              <div class="bag-mock aspect-square cursor-pointer opacity-70 hover:opacity-100 transition relative overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1622445275576-721325763afe?w=200&q=80&auto=format&fit=crop" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" alt="" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Product info -->
+          <div class="p-8 lg:p-12">
+            <div class="text-[10px] tracking-luxe uppercase text-gold-deep mb-2 flex items-center gap-2">
+              <span>Lot 0247 · Pre-Loved</span> <span class="w-px h-3 bg-graphite/30"></span> <span>c. 1994 · Paris</span>
+            </div>
+            <h1 class="serif text-4xl md:text-5xl leading-[1.05] mb-2">Vintage Chanel<br/>Double Flap Bag</h1>
+            <div class="text-[13px] text-graphite/70 mb-6">Medium · Quilted Lambskin · 24K Gold-Plated Hardware</div>
+
+            <!-- Trust Signal: Authenticity -->
+            <div class="glass p-5 mb-5 has-tip">
+              <div class="flex items-center justify-between cursor-help">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full badge-gold flex items-center justify-center verified-pulse">
+                    <i data-lucide="shield-check" class="w-5 h-5"></i>
+                  </div>
+                  <div>
+                    <div class="text-[10px] tracking-luxe uppercase text-gold-deep">Authentication Status</div>
+                    <div class="serif text-xl">Authenticity Verified</div>
+                  </div>
+                </div>
+                <i data-lucide="info" class="w-4 h-4 text-graphite/60"></i>
+              </div>
+              <div class="tip text-left">
+                <div class="text-[10px] tracking-luxe uppercase text-gold-soft mb-2">Verification Checklist</div>
+                <ul class="space-y-1.5">
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3 h-3 text-gold-soft mt-0.5"></i> Hardware serial cross-referenced (1994 Paris atelier)</li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3 h-3 text-gold-soft mt-0.5"></i> Lambskin grain & stitch density confirmed</li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3 h-3 text-gold-soft mt-0.5"></i> Interior date stamp & holographic sticker present</li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3 h-3 text-gold-soft mt-0.5"></i> CC clasp tension within tolerance (1990s spec)</li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3 h-3 text-gold-soft mt-0.5"></i> UV reflectance test passed on lining</li>
+                </ul>
+                <div class="mt-3 pt-3 border-t border-white/10 text-gold-soft">Reviewed by Émile R. · Master Leather Specialist · 18 yrs</div>
+              </div>
+            </div>
+
+            <!-- Seller reputation -->
+            <div class="glass p-5 mb-5">
+              <!-- Identity + action -->
+              <div class="flex items-center gap-4">
+                <div class="relative flex-shrink-0">
+                  <img src="https://i.pravatar.cc/120?img=12" alt="Alex M." class="w-14 h-14 rounded-full object-cover ring-2 ring-gold-soft/60 ring-offset-2 ring-offset-white" />
+                  <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-sage border-2 border-white" title="Online now"></span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <span class="serif text-xl leading-tight block">Alex M.</span>
+                  <div class="text-[11px] text-graphite/55 mt-1 flex items-center gap-1.5">
+                    <i data-lucide="map-pin" class="w-3 h-3"></i> Milan, IT
+                  </div>
+                </div>
+                <button class="btn-ghost px-3 py-2 text-[10px] inline-flex items-center gap-1.5 flex-shrink-0">
+                  <i data-lucide="message-circle" class="w-3 h-3"></i> <span class="hidden sm:inline">Message</span>
+                </button>
+              </div>
+
+              <!-- Stats: the 3 metrics that actually matter to a buyer -->
+              <div class="mt-5 pt-5 border-t hairline grid grid-cols-3 gap-2 text-center">
+                <div>
+                  <div class="flex items-center justify-center gap-1">
+                    <i data-lucide="star" class="w-3.5 h-3.5 fill-gold text-gold"></i>
+                    <span class="serif text-xl leading-none">4.9</span>
+                  </div>
+                  <div class="text-[10px] tracking-luxe uppercase text-graphite/55 mt-1.5">Rating</div>
+                </div>
+                <div class="border-x hairline">
+                  <div class="serif text-xl leading-none">120</div>
+                  <div class="text-[10px] tracking-luxe uppercase text-graphite/55 mt-1.5">Sales</div>
+                </div>
+                <div>
+                  <div class="serif text-xl leading-none">98<span class="text-xs">%</span></div>
+                  <div class="text-[10px] tracking-luxe uppercase text-graphite/55 mt-1.5">On-Time</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Condition rating -->
+            <div class="mb-6">
+              <div class="flex items-center justify-between mb-3">
+                <div class="text-[10px] tracking-luxe uppercase text-gold-deep">Condition Rating</div>
+                <div class="text-[11px] text-graphite/60">Atelier-graded</div>
+              </div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="serif text-2xl">Excellent</span>
+                <span class="serif text-2xl text-gold-deep">9.2<span class="text-sm text-graphite/50">/10</span></span>
+              </div>
+              <div class="step-line">
+                <div class="fill" style="width:92%"></div>
+              </div>
+              <div class="grid grid-cols-5 gap-3 mt-4 text-[11px]">
+                <div class="text-center"><div class="text-graphite/60">Exterior</div><div class="font-medium mt-0.5">9.5</div></div>
+                <div class="text-center"><div class="text-graphite/60">Interior</div><div class="font-medium mt-0.5">9.0</div></div>
+                <div class="text-center"><div class="text-graphite/60">Hardware</div><div class="font-medium mt-0.5">9.2</div></div>
+                <div class="text-center"><div class="text-graphite/60">Corners</div><div class="font-medium mt-0.5">9.0</div></div>
+                <div class="text-center"><div class="text-graphite/60">Stitching</div><div class="font-medium mt-0.5">9.5</div></div>
+              </div>
+            </div>
+
+            <!-- Provenance -->
+            <details class="border hairline mb-6" open>
+              <summary class="p-4 cursor-pointer flex items-center justify-between text-[12px] tracking-luxe uppercase">
+                <span class="flex items-center gap-2"><i data-lucide="scroll" class="w-4 h-4 text-gold-deep"></i> Provenance & History</span>
+                <i data-lucide="chevron-down" class="w-4 h-4"></i>
+              </summary>
+              <div class="p-5 pt-0 text-[13px] leading-relaxed text-graphite/80 space-y-3">
+                <div class="relative pl-5 border-l-2 border-gold-soft/40">
+                  <div class="absolute -left-[5px] top-1 w-2 h-2 rounded-full bg-gold-deep"></div>
+                  <div class="text-[10px] tracking-luxe uppercase text-gold-deep">1994 · Paris</div>
+                  <div>Originally retailed at Chanel boutique, 31 Rue Cambon. Includes original receipt copy.</div>
+                </div>
+                <div class="relative pl-5 border-l-2 border-gold-soft/40">
+                  <div class="absolute -left-[5px] top-1 w-2 h-2 rounded-full bg-gold-deep"></div>
+                  <div class="text-[10px] tracking-luxe uppercase text-gold-deep">1994 – 2019 · Private Collection</div>
+                  <div>Single-owner, stored in climate-controlled wardrobe. Featured in Vogue Italia, Sept. 2003.</div>
+                </div>
+                <div class="relative pl-5">
+                  <div class="absolute -left-[5px] top-1 w-2 h-2 rounded-full bg-gold-deep"></div>
+                  <div class="text-[10px] tracking-luxe uppercase text-gold-deep">2024 · Commy Atelier</div>
+                  <div>Authenticated, professionally conditioned, and admitted to The Vault.</div>
+                </div>
+              </div>
+            </details>
+
+            <!-- Pricing -->
+            <div class="border-t hairline pt-6">
+              <div class="flex items-end justify-between mb-1">
+                <div>
+                  <div class="text-[10px] tracking-luxe uppercase text-graphite/60">Listed at</div>
+                  <div class="serif text-5xl">€6,850</div>
+                </div>
+                <div class="text-right text-[11px] text-graphite/60">
+                  <div class="line-through">Retail today: €11,200</div>
+                  <div class="text-sage font-medium mt-1">39% below retail</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 mt-2 text-[11px] text-graphite/60">
+                <i data-lucide="trending-down" class="w-3 h-3"></i>
+                <span>Price reduced €450 · 7 days ago</span>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3 mt-6">
+                <button class="btn-ink py-4 flex items-center justify-center gap-2" onclick="openCheckout()">
+                  <i data-lucide="lock" class="w-4 h-4"></i> Buy Now
+                </button>
+                <button class="btn-gold py-4 flex items-center justify-center gap-2" onclick="openOfferModal()">
+                  <i data-lucide="hand-coins" class="w-4 h-4"></i> Make an Offer
+                </button>
+              </div>
+              <div class="mt-4 grid grid-cols-3 gap-2 text-[10px] text-center">
+                <div class="flex flex-col items-center gap-1 p-2">
+                  <i data-lucide="shield-check" class="w-4 h-4 text-gold-deep"></i>
+                  <span>Escrow Protected</span>
+                </div>
+                <div class="flex flex-col items-center gap-1 p-2 border-x hairline">
+                  <i data-lucide="truck" class="w-4 h-4 text-gold-deep"></i>
+                  <span>Insured Shipping</span>
+                </div>
+                <div class="flex flex-col items-center gap-1 p-2">
+                  <i data-lucide="rotate-ccw" class="w-4 h-4 text-gold-deep"></i>
+                  <span>14-Day Returns</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============= UGC / LISTING OPTIMIZER ============= -->
+      <section id="sell">
+        <div class="flex items-end justify-between mb-6 border-b hairline pb-4 flex-wrap gap-4">
+          <div>
+            <div class="text-[10px] tracking-luxe uppercase text-gold-deep mb-2">Atelier Studio</div>
+            <h2 class="serif text-3xl md:text-4xl">Seller Listing Preview</h2>
+            <p class="text-[13px] text-graphite/60 mt-2 max-w-xl">Our AI atelier transforms raw seller photography into curator-grade imagery — background removal, color correction, and a signature gold frame.</p>
+          </div>
+          <button class="btn-ghost px-4 py-3 inline-flex items-center gap-2" id="toggleBA">
+            <i data-lucide="sparkles" class="w-4 h-4"></i> Re-process
+          </button>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <!-- Before -->
+          <div class="border hairline bg-white">
+            <div class="flex items-center justify-between p-4 border-b hairline">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                <span class="text-[10px] tracking-luxe uppercase text-graphite/60">Raw upload · As submitted</span>
+              </div>
+              <span class="text-[10px] tracking-luxe uppercase">Before</span>
+            </div>
+            <div class="aspect-square relative overflow-hidden" style="background: #3e3225;">
+              <!-- Inline SVG illustration of a Chanel-style quilted bag on a wooden surface — guaranteed to render -->
+              <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 w-full h-full" style="filter: contrast(0.78) saturate(0.6) brightness(0.78);">
+                <defs>
+                  <!-- Wooden plank floor -->
+                  <pattern id="wood-floor" patternUnits="userSpaceOnUse" width="56" height="400" patternTransform="rotate(2)">
+                    <rect width="56" height="400" fill="#5a4a35"/>
+                    <rect x="0" width="28" height="400" fill="#4a3d2c"/>
+                    <line x1="28" y1="0" x2="28" y2="400" stroke="#3a2e22" stroke-width="0.5"/>
+                  </pattern>
+                  <!-- Quilted diamond pattern for the bag -->
+                  <pattern id="quilt" patternUnits="userSpaceOnUse" width="22" height="22" patternTransform="rotate(45)">
+                    <line x1="0" y1="0" x2="0" y2="22" stroke="#2a221f" stroke-width="1"/>
+                    <line x1="0" y1="0" x2="22" y2="0" stroke="#2a221f" stroke-width="1"/>
+                  </pattern>
+                  <!-- Soft warm tungsten light -->
+                  <radialGradient id="light" cx="78%" cy="22%" r="55%">
+                    <stop offset="0%" stop-color="#dba066" stop-opacity="0.30"/>
+                    <stop offset="100%" stop-color="transparent"/>
+                  </radialGradient>
+                  <!-- Bag shadow blur -->
+                  <filter id="soft-shadow"><feGaussianBlur stdDeviation="8"/></filter>
+                </defs>
+
+                <!-- Wooden floor -->
+                <rect width="400" height="400" fill="url(#wood-floor)"/>
+                <!-- Light overlay -->
+                <rect width="400" height="400" fill="url(#light)"/>
+
+                <!-- Out-of-focus background object (top-left clutter) -->
+                <circle cx="48" cy="62" r="32" fill="#8a6440" opacity="0.4" filter="url(#soft-shadow)"/>
+
+                <!-- BAG - rotated, off-center for amateur shot -->
+                <g transform="rotate(-5 200 220)">
+                  <!-- Shadow under bag -->
+                  <ellipse cx="200" cy="335" rx="135" ry="14" fill="#000" opacity="0.55" filter="url(#soft-shadow)"/>
+
+                  <!-- Bag main body -->
+                  <rect x="62" y="138" width="276" height="188" rx="6" fill="#0c0a09"/>
+                  <!-- Subtle quilted diamond pattern -->
+                  <rect x="62" y="138" width="276" height="188" rx="6" fill="url(#quilt)" opacity="0.55"/>
+                  <!-- Top flap -->
+                  <rect x="62" y="138" width="276" height="98" rx="6" fill="#161210"/>
+                  <rect x="62" y="138" width="276" height="98" rx="6" fill="url(#quilt)" opacity="0.45"/>
+                  <!-- Flap edge highlight -->
+                  <line x1="62" y1="236" x2="338" y2="236" stroke="#2a221f" stroke-width="1.5"/>
+
+                  <!-- Iconic CC clasp (interlocking circles) -->
+                  <g transform="translate(200 245)">
+                    <!-- Left C -->
+                    <path d="M -10,-14 A 14,14 0 1 0 -10,14 L -10,8 A 8,8 0 1 1 -10,-8 z" fill="#b8945f" opacity="0.85"/>
+                    <!-- Right C -->
+                    <path d="M 10,-14 A 14,14 0 1 1 10,14 L 10,8 A 8,8 0 1 0 10,-8 z" fill="#b8945f" opacity="0.85"/>
+                    <!-- Subtle highlight -->
+                    <path d="M -14,-6 A 14,14 0 0 1 -8,-13" stroke="#e0c697" stroke-width="1" fill="none" opacity="0.7"/>
+                  </g>
+
+                  <!-- Gold chain strap (arched over the top) -->
+                  <path d="M 100,140 Q 200,50 300,140" stroke="#9a7b4f" stroke-width="3" fill="none"/>
+                  <path d="M 100,140 Q 200,50 300,140" stroke="#c9a76a" stroke-width="1.5" fill="none" stroke-dasharray="2 3"/>
+                  <!-- Chain attachment rings -->
+                  <circle cx="100" cy="140" r="5" fill="none" stroke="#b8945f" stroke-width="1.5"/>
+                  <circle cx="300" cy="140" r="5" fill="none" stroke="#b8945f" stroke-width="1.5"/>
+                </g>
+              </svg>
+
+              <!-- Bad-lighting vignette (uneven indoor) -->
+              <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse at 25% 90%, rgba(10,10,10,0.45), transparent 55%), radial-gradient(ellipse at 80% 15%, rgba(220,160,90,0.10), transparent 50%);"></div>
+              <!-- Camera-roll filename hint -->
+              <div class="absolute bottom-3 left-3 text-[9px] tracking-[0.2em] uppercase text-bone/55">IMG_4287.jpg</div>
+            </div>
+            <div class="p-4 border-t hairline">
+              <div class="text-[15px] leading-snug text-graphite/80">vintage chanel quilted bag — black, mom's old one from the 90s!! still in gud condition. dm 4 price</div>
+              <div class="mt-2 flex flex-wrap gap-1">
+                <span class="text-[10px] px-2 py-1 bg-red-50 text-red-700 rounded">No size</span>
+                <span class="text-[10px] px-2 py-1 bg-red-50 text-red-700 rounded">Underexposed</span>
+                <span class="text-[10px] px-2 py-1 bg-red-50 text-red-700 rounded">Cluttered surface</span>
+                <span class="text-[10px] px-2 py-1 bg-red-50 text-red-700 rounded">Casual copy</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- After -->
+          <div class="border-2 border-gold bg-white relative" id="afterCard">
+            <div class="absolute -top-3 left-4 badge-gold text-[10px] tracking-luxe uppercase px-3 py-1 rounded-full flex items-center gap-1.5">
+              <i data-lucide="sparkles" class="w-3 h-3 sparkle"></i> AI-Optimized by Commy
+            </div>
+            <div class="flex items-center justify-between p-4 border-b hairline">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-sage"></span>
+                <span class="text-[10px] tracking-luxe uppercase text-gold-deep">Atelier-grade · Ready to publish</span>
+              </div>
+              <span class="text-[10px] tracking-luxe uppercase">After</span>
+            </div>
+            <div class="aspect-square bag-mock relative overflow-hidden">
+              <div class="bag-chain"></div>
+              <img src="https://images.unsplash.com/photo-1591348278863-a8fb3887e2aa?w=600&q=85&auto=format&fit=crop"
+                   alt="AI-optimized Chanel bag"
+                   loading="lazy"
+                   onerror="this.remove()"
+                   class="absolute inset-0 w-full h-full object-cover" />
+              <div class="absolute top-3 right-3 z-10 glass-gold text-[9px] tracking-luxe uppercase px-2 py-1 rounded-full inline-flex items-center gap-1">
+                <i data-lucide="badge-check" class="w-2.5 h-2.5"></i> Verified
+              </div>
+            </div>
+            <div class="p-4 border-t hairline">
+              <div class="text-[10px] tracking-luxe uppercase text-gold-deep mb-1">Lot · Pre-loved · c. 1994</div>
+              <div class="serif text-lg leading-snug">Vintage Chanel Double Flap Bag — Medium, Black Quilted Lambskin, 24K Gold-Plated Hardware</div>
+              <div class="mt-2 flex flex-wrap gap-1">
+                <span class="text-[10px] px-2 py-1 bg-ash text-ink rounded">Background removed</span>
+                <span class="text-[10px] px-2 py-1 bg-ash text-ink rounded">Color corrected</span>
+                <span class="text-[10px] px-2 py-1 bg-ash text-ink rounded">Auto-titled</span>
+                <span class="text-[10px] px-2 py-1 bg-ash text-ink rounded">Frame applied</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI pipeline -->
+        <div class="glass mt-6 p-5">
+          <div class="text-[10px] tracking-luxe uppercase text-gold-deep mb-4 flex items-center gap-2"><i data-lucide="cpu" class="w-3 h-3"></i> Optimization Pipeline</div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div class="glass-soft flex items-start gap-3 p-3">
+              <i data-lucide="scan" class="w-4 h-4 text-gold-deep mt-0.5"></i>
+              <div>
+                <div class="text-[11px] font-medium">Subject Detect</div>
+                <div class="text-[10px] text-graphite/60">Isolate the piece, remove clutter</div>
+              </div>
+            </div>
+            <div class="glass-soft flex items-start gap-3 p-3">
+              <i data-lucide="palette" class="w-4 h-4 text-gold-deep mt-0.5"></i>
+              <div>
+                <div class="text-[11px] font-medium">Color Truth</div>
+                <div class="text-[10px] text-graphite/60">Normalize lighting & WB</div>
+              </div>
+            </div>
+            <div class="glass-soft flex items-start gap-3 p-3">
+              <i data-lucide="frame" class="w-4 h-4 text-gold-deep mt-0.5"></i>
+              <div>
+                <div class="text-[11px] font-medium">House Frame</div>
+                <div class="text-[10px] text-graphite/60">Apply Commy gold border</div>
+              </div>
+            </div>
+            <div class="glass-soft flex items-start gap-3 p-3">
+              <i data-lucide="text-cursor" class="w-4 h-4 text-gold-deep mt-0.5"></i>
+              <div>
+                <div class="text-[11px] font-medium">Title Rewrite</div>
+                <div class="text-[10px] text-graphite/60">Curator-grade copy</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============= SELLER DASHBOARD TAB ============= -->
+      <section id="dashboard-section" class="bg-ink text-bone -mx-6 lg:mx-0 px-6 lg:px-10 py-12 lg:py-16 lg:border lg:hairline-light">
+        <div class="flex items-end justify-between mb-8 border-b border-white/10 pb-4 flex-wrap gap-4">
+          <div>
+            <div class="text-[10px] tracking-luxe uppercase text-gold-soft mb-2">Your Atelier</div>
+            <h2 class="serif text-3xl md:text-4xl">Seller Dashboard</h2>
+          </div>
+          <div class="flex items-center gap-3 text-[11px]">
+            <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-sage"></span><span>All systems operational</span></div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex flex-wrap gap-6 mb-8 border-b border-white/10" role="tablist">
+          <button class="tab relative pb-3 text-[12px] tracking-luxe uppercase text-bone/60 hover:text-bone" aria-selected="true" data-tab="listings" onclick="showTab('listings')">
+            Active Listings <span class="text-gold-soft">8</span>
+            <span class="tab-line absolute left-0 bottom-0 h-px w-full bg-gold-soft"></span>
+          </button>
+          <button class="tab relative pb-3 text-[12px] tracking-luxe uppercase text-bone/60 hover:text-bone" aria-selected="false" data-tab="offers" onclick="showTab('offers')">
+            Offers Received <span class="text-gold-soft">3</span>
+            <span class="tab-line absolute left-0 bottom-0 h-px w-full bg-gold-soft"></span>
+          </button>
+          <button class="tab relative pb-3 text-[12px] tracking-luxe uppercase text-bone/60 hover:text-bone" aria-selected="false" data-tab="wallet" onclick="showTab('wallet')">
+            Escrow Wallet
+            <span class="tab-line absolute left-0 bottom-0 h-px w-full bg-gold-soft"></span>
+          </button>
+          <button class="tab relative pb-3 text-[12px] tracking-luxe uppercase text-bone/60 hover:text-bone" aria-selected="false" data-tab="analytics" onclick="showTab('analytics')">
+            Analytics
+            <span class="tab-line absolute left-0 bottom-0 h-px w-full bg-gold-soft"></span>
+          </button>
+        </div>
+
+        <!-- Listings tab -->
+        <div class="tab-panel" data-panel="listings">
+          <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- card -->
+            <div class="product-card bg-coal border border-white/8 hover:border-gold-soft/60 transition group overflow-hidden">
+              <div class="bag-mock aspect-square relative overflow-hidden">
+                <div class="bag-chain"></div>
+                <img src="https://images.unsplash.com/photo-1591348278863-a8fb3887e2aa?w=500&q=80&auto=format&fit=crop" alt="Chanel Double Flap" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
+                <span class="glass-gold absolute top-2 left-2 z-10 text-[9px] tracking-luxe uppercase px-2 py-0.5 rounded-full">Live</span>
+              </div>
+              <div class="p-4">
+                <div class="text-[10px] tracking-luxe uppercase text-gold-soft">Chanel</div>
+                <div class="serif text-lg leading-tight">Double Flap ·<br/>Medium</div>
+                <div class="flex items-end justify-between mt-3">
+                  <div class="serif text-2xl">€6,850</div>
+                  <div class="text-[10px] text-bone/60"><div class="flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> 2,431</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="product-card bg-coal border border-white/8 hover:border-gold-soft/60 transition group overflow-hidden">
+              <div class="watch-mock aspect-square relative overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80&auto=format&fit=crop" alt="Rolex Submariner" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
+                <span class="glass-gold absolute top-2 left-2 z-10 text-[9px] tracking-luxe uppercase px-2 py-0.5 rounded-full">Live</span>
+              </div>
+              <div class="p-4">
+                <div class="text-[10px] tracking-luxe uppercase text-gold-soft">Rolex</div>
+                <div class="serif text-lg leading-tight">Submariner ·<br/>Date</div>
+                <div class="flex items-end justify-between mt-3">
+                  <div class="serif text-2xl">€14,200</div>
+                  <div class="text-[10px] text-bone/60"><div class="flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> 5,109</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="product-card bg-coal border border-white/8 hover:border-gold-soft/60 transition group overflow-hidden">
+              <div class="scarf-mock aspect-square relative overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1582142306909-195724d33ffc?w=500&q=80&auto=format&fit=crop" alt="Hermès Silk Carré" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
+                <span class="glass-chip absolute top-2 left-2 z-10 text-[9px] tracking-luxe uppercase px-2 py-0.5 rounded-full">Offer</span>
+              </div>
+              <div class="p-4">
+                <div class="text-[10px] tracking-luxe uppercase text-gold-soft">Hermès</div>
+                <div class="serif text-lg leading-tight">Carré 90 ·<br/>Silk Twill</div>
+                <div class="flex items-end justify-between mt-3">
+                  <div class="serif text-2xl">€480</div>
+                  <div class="text-[10px] text-bone/60"><div class="flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> 892</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="product-card bg-coal border border-white/8 hover:border-gold-soft/60 transition group overflow-hidden">
+              <div class="heels-mock aspect-square relative overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1535043934128-cf0b28d52f95?w=500&q=80&auto=format&fit=crop" alt="Louboutin So Kate" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
+                <span class="glass-gold absolute top-2 left-2 z-10 text-[9px] tracking-luxe uppercase px-2 py-0.5 rounded-full">Live</span>
+              </div>
+              <div class="p-4">
+                <div class="text-[10px] tracking-luxe uppercase text-gold-soft">Louboutin</div>
+                <div class="serif text-lg leading-tight">So Kate ·<br/>120mm</div>
+                <div class="flex items-end justify-between mt-3">
+                  <div class="serif text-2xl">€420</div>
+                  <div class="text-[10px] text-bone/60"><div class="flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> 1,204</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="product-card bg-coal border border-white/8 hover:border-gold-soft/60 transition group overflow-hidden">
+              <div class="ring-mock aspect-square relative overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=500&q=80&auto=format&fit=crop" alt="Cartier Trinity Ring" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
+                <span class="glass-chip absolute top-2 left-2 z-10 text-[9px] tracking-luxe uppercase px-2 py-0.5 rounded-full">In Atelier</span>
+              </div>
+              <div class="p-4">
+                <div class="text-[10px] tracking-luxe uppercase text-gold-soft">Cartier</div>
+                <div class="serif text-lg leading-tight">Trinity Ring ·<br/>Yellow Gold</div>
+                <div class="flex items-end justify-between mt-3">
+                  <div class="serif text-2xl">€1,890</div>
+                  <div class="text-[10px] text-bone/60"><div class="flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> Auth</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="product-card bg-coal border border-white/8 hover:border-gold-soft/60 transition group overflow-hidden">
+              <div class="coat-mock aspect-square relative overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=500&q=80&auto=format&fit=crop" alt="Max Mara Camel Coat" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
+                <span class="glass-gold absolute top-2 left-2 z-10 text-[9px] tracking-luxe uppercase px-2 py-0.5 rounded-full">Live</span>
+              </div>
+              <div class="p-4">
+                <div class="text-[10px] tracking-luxe uppercase text-gold-soft">Max Mara</div>
+                <div class="serif text-lg leading-tight">Camel 101801 ·<br/>Size M</div>
+                <div class="flex items-end justify-between mt-3">
+                  <div class="serif text-2xl">€1,150</div>
+                  <div class="text-[10px] text-bone/60"><div class="flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> 743</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="bg-coal border border-dashed border-white/15 hover:border-gold-soft/60 transition group flex flex-col items-center justify-center aspect-square cursor-pointer">
+              <i data-lucide="plus" class="w-6 h-6 text-gold-soft"></i>
+              <div class="text-[11px] tracking-luxe uppercase text-gold-soft mt-3">Consign New Piece</div>
+              <div class="text-[10px] text-bone/40 mt-1">Free atelier review</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Offers tab -->
+        <div class="tab-panel hidden" data-panel="offers">
+          <div class="space-y-3">
+            <div class="glass-dark p-5 flex flex-wrap items-center gap-4">
+              <div class="bag-mock w-20 h-20 relative flex-shrink-0 overflow-hidden">
+                <div class="bag-chain"></div>
+                <img src="https://images.unsplash.com/photo-1591348278863-a8fb3887e2aa?w=200&q=80&auto=format&fit=crop" alt="" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
+              </div>
+              <div class="flex-1 min-w-[200px]">
+                <div class="text-[10px] tracking-luxe uppercase text-gold-soft">Chanel Double Flap</div>
+                <div class="serif text-xl">Listed at €6,850</div>
+                <div class="text-[11px] text-bone/60 mt-1">From Lena V. · ⭐ 4.8 · 47 purchases</div>
+              </div>
+              <div class="text-right">
+                <div class="text-[10px] tracking-luxe uppercase text-bone/60">Offer</div>
+                <div class="serif text-3xl text-gold-soft">€5,900</div>
+                <div class="text-[10px] text-bone/40">14% below ask</div>
+              </div>
+              <div class="flex gap-2 w-full md:w-auto">
+                <button class="btn-gold px-4 py-2.5">Accept</button>
+                <button class="bg-coal border border-white/15 hover:border-gold-soft text-bone px-4 py-2.5 text-[12px] tracking-luxe uppercase">Counter</button>
+                <button class="bg-coal border border-white/15 hover:border-white/30 text-bone/60 px-4 py-2.5 text-[12px] tracking-luxe uppercase">Decline</button>
+              </div>
+            </div>
+            <div class="glass-dark p-5 flex flex-wrap items-center gap-4">
+              <div class="watch-mock w-20 h-20 flex-shrink-0 relative overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&q=80&auto=format&fit=crop" alt="" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
+              </div>
+              <div class="flex-1 min-w-[200px]">
+                <div class="text-[10px] tracking-luxe uppercase text-gold-soft">Rolex Submariner</div>
+                <div class="serif text-xl">Listed at €14,200</div>
+                <div class="text-[11px] text-bone/60 mt-1">From Marco P. · ⭐ 5.0 · 12 purchases</div>
+              </div>
+              <div class="text-right">
+                <div class="text-[10px] tracking-luxe uppercase text-bone/60">Offer</div>
+                <div class="serif text-3xl text-gold-soft">€13,500</div>
+                <div class="text-[10px] text-bone/40">5% below ask</div>
+              </div>
+              <div class="flex gap-2 w-full md:w-auto">
+                <button class="btn-gold px-4 py-2.5">Accept</button>
+                <button class="bg-coal border border-white/15 hover:border-gold-soft text-bone px-4 py-2.5 text-[12px] tracking-luxe uppercase">Counter</button>
+                <button class="bg-coal border border-white/15 hover:border-white/30 text-bone/60 px-4 py-2.5 text-[12px] tracking-luxe uppercase">Decline</button>
+              </div>
+            </div>
+            <div class="glass-dark p-5 flex flex-wrap items-center gap-4 opacity-70">
+              <div class="heels-mock w-20 h-20 flex-shrink-0 relative overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1535043934128-cf0b28d52f95?w=200&q=80&auto=format&fit=crop" alt="" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
+              </div>
+              <div class="flex-1 min-w-[200px]">
+                <div class="text-[10px] tracking-luxe uppercase text-gold-soft">Louboutin So Kate</div>
+                <div class="serif text-xl">Listed at €420</div>
+                <div class="text-[11px] text-bone/60 mt-1">From Anon · ⭐ 3.2 · 2 purchases</div>
+              </div>
+              <div class="text-right">
+                <div class="text-[10px] tracking-luxe uppercase text-bone/60">Offer</div>
+                <div class="serif text-3xl text-bone/60">€180</div>
+                <div class="text-[10px] text-red-300">57% below — flagged</div>
+              </div>
+              <div class="flex gap-2 w-full md:w-auto">
+                <button class="bg-coal border border-white/15 hover:border-gold-soft text-bone px-4 py-2.5 text-[12px] tracking-luxe uppercase">Counter</button>
+                <button class="bg-coal border border-white/15 hover:border-white/30 text-bone/60 px-4 py-2.5 text-[12px] tracking-luxe uppercase">Decline</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wallet tab -->
+        <div class="tab-panel hidden" data-panel="wallet">
+          <div class="grid lg:grid-cols-3 gap-4">
+            <div class="lg:col-span-2 bg-gradient-to-br from-coal to-ink border border-gold-soft/30 p-8">
+              <div class="text-[10px] tracking-luxe uppercase text-gold-soft mb-4">Escrow Wallet · Available Balance</div>
+              <div class="serif text-6xl">€12,847.<span class="text-3xl">50</span></div>
+              <div class="mt-2 text-[12px] text-bone/60">≈ $13,920 USD · Next payout Friday</div>
+              <div class="mt-6 flex flex-wrap gap-3">
+                <button class="btn-gold px-5 py-3"><i data-lucide="arrow-down-to-line" class="w-3 h-3 inline -mt-0.5 mr-1"></i> Withdraw to Bank</button>
+                <button class="bg-coal border border-white/15 text-bone px-5 py-3 text-[12px] tracking-luxe uppercase">Statement</button>
+              </div>
+            </div>
+            <div class="glass-dark p-6">
+              <div class="text-[10px] tracking-luxe uppercase text-gold-soft mb-3">Held in Escrow</div>
+              <div class="serif text-3xl">€8,200.00</div>
+              <div class="text-[11px] text-bone/60 mt-1">2 transactions pending atelier review</div>
+              <div class="mt-4 pt-4 border-t border-white/5 space-y-3 text-[12px]">
+                <div class="flex justify-between"><span class="text-bone/70">Rolex Submariner</span><span class="text-gold-soft">€7,000</span></div>
+                <div class="flex justify-between"><span class="text-bone/70">Hermès Carré</span><span class="text-gold-soft">€1,200</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 glass-dark p-6">
+            <div class="text-[10px] tracking-luxe uppercase text-gold-soft mb-4">Recent Activity</div>
+            <div class="divide-y divide-white/5">
+              <div class="py-3 flex items-center justify-between text-[13px]">
+                <div class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-sage"></div><span>Funds released — Chanel Wallet</span></div>
+                <div class="flex items-center gap-6 text-bone/70"><span>+€1,200</span><span class="text-[11px] text-bone/40">2 days ago</span></div>
+              </div>
+              <div class="py-3 flex items-center justify-between text-[13px]">
+                <div class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-gold"></div><span>Payment received — Rolex Sub (in atelier)</span></div>
+                <div class="flex items-center gap-6 text-bone/70"><span>€7,000 held</span><span class="text-[11px] text-bone/40">4 days ago</span></div>
+              </div>
+              <div class="py-3 flex items-center justify-between text-[13px]">
+                <div class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-sage"></div><span>Withdrawn to IBAN ••3421</span></div>
+                <div class="flex items-center gap-6 text-bone/70"><span>−€4,500</span><span class="text-[11px] text-bone/40">7 days ago</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analytics tab -->
+        <div class="tab-panel hidden" data-panel="analytics">
+          <div class="grid md:grid-cols-4 gap-4">
+            <div class="glass-dark p-5">
+              <div class="text-[10px] tracking-luxe uppercase text-gold-soft">Gross Sales · 30d</div>
+              <div class="serif text-3xl mt-2">€24,710</div>
+              <div class="text-[11px] text-sage mt-1">▲ 18.4%</div>
+            </div>
+            <div class="glass-dark p-5">
+              <div class="text-[10px] tracking-luxe uppercase text-gold-soft">Sell-Through</div>
+              <div class="serif text-3xl mt-2">72%</div>
+              <div class="text-[11px] text-sage mt-1">▲ 4 pts</div>
+            </div>
+            <div class="glass-dark p-5">
+              <div class="text-[10px] tracking-luxe uppercase text-gold-soft">Avg. Sale Price</div>
+              <div class="serif text-3xl mt-2">€3,089</div>
+              <div class="text-[11px] text-bone/50 mt-1">— flat</div>
+            </div>
+            <div class="glass-dark p-5">
+              <div class="text-[10px] tracking-luxe uppercase text-gold-soft">Reputation</div>
+              <div class="serif text-3xl mt-2">4.9 ★</div>
+              <div class="text-[11px] text-sage mt-1">120 reviews</div>
+            </div>
+          </div>
+          <div class="mt-4 glass-dark p-6">
+            <div class="text-[10px] tracking-luxe uppercase text-gold-soft mb-6">Sales Velocity · 12 weeks</div>
+            <div class="flex items-end gap-2 h-40">
+              <!-- Mock bars -->
+              <div class="flex-1 bg-gold-deep/30" style="height:30%"></div>
+              <div class="flex-1 bg-gold-deep/40" style="height:45%"></div>
+              <div class="flex-1 bg-gold-deep/30" style="height:35%"></div>
+              <div class="flex-1 bg-gold-deep/50" style="height:55%"></div>
+              <div class="flex-1 bg-gold-deep/40" style="height:42%"></div>
+              <div class="flex-1 bg-gold-deep/60" style="height:62%"></div>
+              <div class="flex-1 bg-gold-deep/50" style="height:50%"></div>
+              <div class="flex-1 bg-gold-deep/70" style="height:72%"></div>
+              <div class="flex-1 bg-gold-deep/60" style="height:65%"></div>
+              <div class="flex-1 bg-gold-deep/80" style="height:80%"></div>
+              <div class="flex-1 bg-gold-deep/70" style="height:70%"></div>
+              <div class="flex-1 bg-gold" style="height:95%"></div>
+            </div>
+            <div class="flex justify-between mt-2 text-[10px] text-bone/40">
+              <span>W1</span><span>W3</span><span>W5</span><span>W7</span><span>W9</span><span>W11</span><span>W12</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============= ALSO IN THE VAULT ============= -->
+      <section>
+        <div class="flex items-end justify-between mb-6 border-b hairline pb-4">
+          <div>
+            <div class="text-[10px] tracking-luxe uppercase text-gold-deep mb-2">Continue your edit</div>
+            <h2 class="serif text-3xl md:text-4xl">Also in the Vault</h2>
+          </div>
+          <a href="#" class="text-[12px] tracking-luxe uppercase gold-underline flex items-center gap-2">All Pieces <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
+          <!-- Card 1 — Rolex -->
+          <div class="product-card group cursor-pointer">
+            <div class="watch-mock aspect-[4/5] relative overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=85&auto=format&fit=crop" alt="Vintage Rolex Submariner" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
+              <span class="glass-gold absolute top-2 left-2 z-10 text-[9px] tracking-luxe uppercase px-2 py-1 rounded-full inline-flex items-center gap-1">
+                <i data-lucide="badge-check" class="w-2.5 h-2.5"></i> Verified
+              </span>
+              <button class="absolute top-2 right-2 z-10 w-8 h-8 bg-bone rounded-full flex items-center justify-center hover:scale-105 transition"><i data-lucide="heart" class="w-3 h-3"></i></button>
+              <span class="glass-chip absolute bottom-2 left-2 right-2 z-10 text-[9px] tracking-luxe uppercase px-2.5 py-1.5 rounded-full inline-flex items-center justify-between gap-2">
+                <span class="flex items-center gap-1"><i data-lucide="star" class="w-2.5 h-2.5 text-gold-soft fill-gold-soft"></i> Excellent</span>
+                <span class="text-gold-soft">9.0</span>
+              </span>
+            </div>
+            <div class="pt-3">
+              <div class="text-[10px] tracking-luxe uppercase text-gold-deep">Rolex · Pre-Loved</div>
+              <div class="serif text-lg leading-tight mt-1">Submariner Date · 1990</div>
+              <div class="serif text-base mt-2">€14,200</div>
+            </div>
+          </div>
+
+          <!-- Card 2 — Hermès Carré -->
+          <div class="product-card group cursor-pointer">
+            <div class="scarf-mock aspect-[4/5] relative overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1582142306909-195724d33ffc?w=600&q=85&auto=format&fit=crop" alt="Hermès Silk Carré" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
+              <span class="glass-gold absolute top-2 left-2 z-10 text-[9px] tracking-luxe uppercase px-2 py-1 rounded-full inline-flex items-center gap-1">
+                <i data-lucide="badge-check" class="w-2.5 h-2.5"></i> Verified
+              </span>
+              <button class="absolute top-2 right-2 z-10 w-8 h-8 bg-bone rounded-full flex items-center justify-center hover:scale-105 transition"><i data-lucide="heart" class="w-3 h-3"></i></button>
+              <span class="glass-chip absolute bottom-2 left-2 right-2 z-10 text-[9px] tracking-luxe uppercase px-2.5 py-1.5 rounded-full inline-flex items-center justify-between gap-2">
+                <span class="flex items-center gap-1"><i data-lucide="star" class="w-2.5 h-2.5 text-gold-soft fill-gold-soft"></i> Pristine</span>
+                <span class="text-gold-soft">10.0</span>
+              </span>
+            </div>
+            <div class="pt-3">
+              <div class="text-[10px] tracking-luxe uppercase text-gold-deep">Hermès · Deadstock</div>
+              <div class="serif text-lg leading-tight mt-1">Carré 90 Silk · 1987</div>
+              <div class="serif text-base mt-2">€480</div>
+            </div>
+          </div>
+
+          <!-- Card 3 — Louboutin -->
+          <div class="product-card group cursor-pointer">
+            <div class="heels-mock aspect-[4/5] relative overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1535043934128-cf0b28d52f95?w=600&q=85&auto=format&fit=crop" alt="Louboutin So Kate heels" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
+              <span class="glass-gold absolute top-2 left-2 z-10 text-[9px] tracking-luxe uppercase px-2 py-1 rounded-full inline-flex items-center gap-1">
+                <i data-lucide="badge-check" class="w-2.5 h-2.5"></i> Verified
+              </span>
+              <button class="absolute top-2 right-2 z-10 w-8 h-8 bg-bone rounded-full flex items-center justify-center hover:scale-105 transition"><i data-lucide="heart" class="w-3 h-3"></i></button>
+              <span class="glass-chip absolute bottom-2 left-2 right-2 z-10 text-[9px] tracking-luxe uppercase px-2.5 py-1.5 rounded-full inline-flex items-center justify-between gap-2">
+                <span class="flex items-center gap-1"><i data-lucide="star" class="w-2.5 h-2.5 text-gold-soft fill-gold-soft"></i> Excellent</span>
+                <span class="text-gold-soft">9.3</span>
+              </span>
+            </div>
+            <div class="pt-3">
+              <div class="text-[10px] tracking-luxe uppercase text-gold-deep">Louboutin · Pre-Loved</div>
+              <div class="serif text-lg leading-tight mt-1">So Kate · 120mm Patent</div>
+              <div class="serif text-base mt-2">€420</div>
+            </div>
+          </div>
+
+          <!-- Card 4 — Cartier -->
+          <div class="product-card group cursor-pointer">
+            <div class="ring-mock aspect-[4/5] relative overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=600&q=85&auto=format&fit=crop" alt="Cartier Trinity ring" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
+              <span class="glass-gold absolute top-2 left-2 z-10 text-[9px] tracking-luxe uppercase px-2 py-1 rounded-full inline-flex items-center gap-1">
+                <i data-lucide="badge-check" class="w-2.5 h-2.5"></i> Verified
+              </span>
+              <button class="absolute top-2 right-2 z-10 w-8 h-8 bg-bone rounded-full flex items-center justify-center hover:scale-105 transition"><i data-lucide="heart" class="w-3 h-3"></i></button>
+              <span class="glass-chip absolute bottom-2 left-2 right-2 z-10 text-[9px] tracking-luxe uppercase px-2.5 py-1.5 rounded-full inline-flex items-center justify-between gap-2">
+                <span class="flex items-center gap-1"><i data-lucide="star" class="w-2.5 h-2.5 text-gold-soft fill-gold-soft"></i> Excellent</span>
+                <span class="text-gold-soft">9.4</span>
+              </span>
+            </div>
+            <div class="pt-3">
+              <div class="text-[10px] tracking-luxe uppercase text-gold-deep">Cartier · Pre-Loved</div>
+              <div class="serif text-lg leading-tight mt-1">Trinity Ring · Three Gold</div>
+              <div class="serif text-base mt-2">€1,890</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="bg-ink text-bone">
+  <div class="max-w-[1400px] mx-auto px-6 lg:px-10 py-16">
+    <div class="grid lg:grid-cols-5 gap-10">
+      <div class="lg:col-span-2">
+        <div class="serif text-4xl">Commy</div>
+        <div class="text-[9px] tracking-luxe uppercase text-bone/50 mt-1">Maison de Résale · Est. MMXIX</div>
+        <p class="mt-6 text-[13px] text-bone/60 max-w-sm leading-relaxed">A peer-to-peer house for storied luxury — authenticated by craftspeople, settled by escrow, and made circular by design.</p>
+        <div class="mt-6 flex items-center gap-3">
+          <a href="#" aria-label="YouTube" class="w-9 h-9 border border-white/10 rounded-full flex items-center justify-center hover:border-gold-soft hover:text-gold-soft transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path>
+              <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
+            </svg>
+          </a>
+          <a href="#" aria-label="TikTok" class="w-9 h-9 border border-white/10 rounded-full flex items-center justify-center hover:border-gold-soft hover:text-gold-soft transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
+            </svg>
+          </a>
+          <a href="#" aria-label="Email" class="w-9 h-9 border border-white/10 rounded-full flex items-center justify-center hover:border-gold-soft hover:text-gold-soft transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+              <path d="m22 7-10 5L2 7"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+      <div>
+        <div class="text-[10px] tracking-luxe uppercase text-gold-soft mb-4">The House</div>
+        <ul class="space-y-2 text-[13px] text-bone/70">
+          <li>Our Ateliers</li><li>Authentication</li><li>Sustainability</li><li>Press</li>
+        </ul>
+      </div>
+      <div>
+        <div class="text-[10px] tracking-luxe uppercase text-gold-soft mb-4">Trade</div>
+        <ul class="space-y-2 text-[13px] text-bone/70">
+          <li>Consign</li><li>The Vault</li><li>Pre-Loved</li><li>Deadstock</li>
+        </ul>
+      </div>
+      <div>
+        <div class="text-[10px] tracking-luxe uppercase text-gold-soft mb-4">Concierge</div>
+        <ul class="space-y-2 text-[13px] text-bone/70">
+          <li>Help · 24/7</li><li>Returns</li><li>Shipping</li><li>Escrow Terms</li>
+        </ul>
+      </div>
+    </div>
+    <div class="mt-12 pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-4 text-[11px] text-bone/40">
+      <div>© MMXXVI Commy Maison · Paris · Milan · Tokyo</div>
+      <div class="flex items-center gap-4"><span>Privacy</span><span>Terms</span><span>Cookies</span></div>
+    </div>
+  </div>
+</footer>
+
+<!-- =============================== -->
+<!-- ============ MODAL ============ -->
+<!-- =============================== -->
+<div id="offerModal" class="fixed inset-0 modal-backdrop z-50 hidden items-center justify-center p-4">
+  <div class="glass w-full max-w-2xl modal-enter relative max-h-[92vh] overflow-y-auto">
+    <button class="absolute top-4 right-4 w-9 h-9 rounded-full hover:bg-ash flex items-center justify-center" onclick="closeOfferModal()">
+      <i data-lucide="x" class="w-4 h-4"></i>
+    </button>
+
+    <!-- Offer view -->
+    <div id="offerView" class="p-8">
+      <div class="text-[10px] tracking-luxe uppercase text-gold-deep mb-2">Negotiation</div>
+      <h3 class="serif text-3xl mb-1">Make an Offer</h3>
+      <p class="text-[13px] text-graphite/70">Alex M. typically responds within 12 minutes.</p>
+
+      <div class="mt-6 flex items-center gap-4 p-4 bg-ash">
+        <div class="bag-mock w-16 h-16 relative flex-shrink-0 overflow-hidden">
+          <div class="bag-chain"></div>
+          <img src="https://images.unsplash.com/photo-1591348278863-a8fb3887e2aa?w=200&q=80&auto=format&fit=crop" alt="" loading="lazy" onerror="this.remove()" class="absolute inset-0 w-full h-full object-cover" />
+        </div>
+        <div class="flex-1">
+          <div class="text-[10px] tracking-luxe uppercase text-gold-deep">Vintage Chanel</div>
+          <div class="serif text-lg">Double Flap · Medium</div>
+        </div>
+        <div class="text-right">
+          <div class="text-[10px] tracking-luxe uppercase text-graphite/60">Listed</div>
+          <div class="serif text-2xl">€6,850</div>
+        </div>
+      </div>
+
+      <div class="mt-8">
+        <label class="text-[10px] tracking-luxe uppercase text-graphite/60">Your Offer</label>
+        <div class="mt-2 flex items-baseline gap-2">
+          <span class="serif text-5xl text-graphite/40">€</span>
+          <input type="number" id="offerAmount" value="5500" class="serif text-6xl bg-transparent w-full focus:outline-none" oninput="updateOfferUI(this.value)">
+        </div>
+        <input type="range" min="2000" max="6850" step="50" value="5500" class="lux mt-4" id="offerSlider" oninput="syncOffer(this.value)">
+        <div class="flex justify-between mt-2 text-[11px] text-graphite/50">
+          <span>Min €2,000</span>
+          <span id="offerDiff">€1,350 below ask · 19.7%</span>
+          <span>Ask €6,850</span>
+        </div>
+      </div>
+
+      <!-- Smart guidance -->
+      <div id="offerGuidance" class="mt-5 p-4 border hairline bg-white">
+        <div class="flex items-start gap-3">
+          <div id="guidanceIcon" class="w-8 h-8 rounded-full bg-sage/10 flex items-center justify-center flex-shrink-0">
+            <i data-lucide="trending-up" class="w-4 h-4 text-sage"></i>
+          </div>
+          <div>
+            <div id="guidanceTitle" class="text-[12px] tracking-luxe uppercase font-medium text-sage">Reasonable Range</div>
+            <div id="guidanceText" class="text-[12px] text-graphite/70 mt-1">Similar Double Flaps have sold between €5,400 – €6,200. Alex is likely to accept or counter close.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 grid grid-cols-3 gap-2 text-[11px]">
+        <button onclick="quickOffer(6000)" class="border hairline px-3 py-2 hover:border-ink">€6,000</button>
+        <button onclick="quickOffer(5500)" class="border hairline px-3 py-2 hover:border-ink">€5,500</button>
+        <button onclick="quickOffer(5000)" class="border hairline px-3 py-2 hover:border-ink">€5,000</button>
+      </div>
+
+      <div class="mt-6 flex items-start gap-2 text-[11px] text-graphite/60">
+        <i data-lucide="info" class="w-3 h-3 mt-0.5"></i>
+        <span>Your offer is binding for 48 hours. Funds are held in escrow upon acceptance.</span>
+      </div>
+
+      <div class="mt-6 grid grid-cols-2 gap-3">
+        <button class="btn-ghost py-4" onclick="closeOfferModal()">Cancel</button>
+        <button class="btn-ink py-4" onclick="submitOffer()">Submit Offer</button>
+      </div>
+    </div>
+
+    <!-- Counter-offer view -->
+    <div id="counterView" class="p-8 hidden">
+      <div class="text-[10px] tracking-luxe uppercase text-gold-deep mb-2">Alex M. has responded</div>
+      <h3 class="serif text-3xl mb-1" id="counterTitle">Counter-Offer Received</h3>
+      <p id="counterIntro" class="text-[13px] text-graphite/70">Your offer was thoughtful, but below the seller's threshold.</p>
+
+      <div class="mt-6 grid grid-cols-3 items-center gap-2">
+        <div class="text-center p-4 border hairline">
+          <div class="text-[10px] tracking-luxe uppercase text-graphite/60">Your Offer</div>
+          <div class="serif text-3xl mt-1" id="counterYou">€5,500</div>
+        </div>
+        <div class="text-center">
+          <i data-lucide="arrow-right" class="w-5 h-5 mx-auto text-gold-deep"></i>
+        </div>
+        <div class="text-center p-4 border-2 border-gold bg-ash pop">
+          <div class="text-[10px] tracking-luxe uppercase text-gold-deep">Counter</div>
+          <div class="serif text-3xl mt-1 text-gold-deep" id="counterAmount">€6,100</div>
+        </div>
+      </div>
+
+      <div class="mt-6 p-4 border hairline bg-ash flex gap-3">
+        <img src="https://i.pravatar.cc/120?img=12" alt="Alex M." class="w-10 h-10 rounded-full object-cover ring-2 ring-gold-soft/60 flex-shrink-0" />
+        <div class="text-[13px] italic text-graphite/80 leading-relaxed">
+          "I appreciate the offer — this piece has documented provenance and I've already turned down €5,800. I can do <span id="counterInline" class="not-italic font-medium text-ink">€6,100</span>, which still puts you 11% below my ask. Let me know."
+        </div>
+      </div>
+
+      <div class="mt-6 grid grid-cols-3 gap-3">
+        <button class="btn-ghost py-4" onclick="counterAction('decline')">Decline</button>
+        <button class="btn-ghost py-4" onclick="counterAction('rebid')">Re-bid</button>
+        <button class="btn-gold py-4" onclick="counterAction('accept')">Accept</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =============================== -->
+<!-- ======== ESCROW MODAL ========= -->
+<!-- =============================== -->
+<div id="escrowModal" class="fixed inset-0 modal-backdrop z-50 hidden items-center justify-center p-4">
+  <div class="glass w-full max-w-3xl modal-enter relative max-h-[92vh] overflow-y-auto">
+    <button class="absolute top-4 right-4 w-9 h-9 rounded-full hover:bg-ash flex items-center justify-center z-10" onclick="closeEscrow()">
+      <i data-lucide="x" class="w-4 h-4"></i>
+    </button>
+
+    <div class="p-8 lg:p-10">
+      <div class="text-[10px] tracking-luxe uppercase text-gold-deep mb-2">Commy Trust Protocol</div>
+      <h3 class="serif text-3xl mb-2">Escrow Payment Flow</h3>
+      <p class="text-[13px] text-graphite/70 max-w-md">Your funds are protected at every step. Watch how your transaction moves through our atelier.</p>
+
+      <!-- Progress bar -->
+      <div class="mt-8 step-line">
+        <div class="fill" id="escrowFill" style="width:0%"></div>
+      </div>
+
+      <!-- Steps -->
+      <div class="mt-6 grid grid-cols-4 gap-2" id="escrowSteps">
+        <div class="escrow-step text-center" data-step="0">
+          <div class="step-dot w-12 h-12 mx-auto rounded-full border-2 border-graphite/20 bg-bone flex items-center justify-center transition-all">
+            <i data-lucide="wallet" class="w-5 h-5"></i>
+          </div>
+          <div class="text-[10px] tracking-luxe uppercase mt-3 text-graphite/60 step-label">Payment Held</div>
+          <div class="text-[11px] text-graphite/50 mt-1 step-sub">by Commy Escrow</div>
+        </div>
+        <div class="escrow-step text-center" data-step="1">
+          <div class="step-dot w-12 h-12 mx-auto rounded-full border-2 border-graphite/20 bg-bone flex items-center justify-center transition-all">
+            <i data-lucide="package" class="w-5 h-5"></i>
+          </div>
+          <div class="text-[10px] tracking-luxe uppercase mt-3 text-graphite/60 step-label">Item Dispatched</div>
+          <div class="text-[11px] text-graphite/50 mt-1 step-sub">to our authenticators</div>
+        </div>
+        <div class="escrow-step text-center" data-step="2">
+          <div class="step-dot w-12 h-12 mx-auto rounded-full border-2 border-graphite/20 bg-bone flex items-center justify-center transition-all">
+            <i data-lucide="shield-check" class="w-5 h-5"></i>
+          </div>
+          <div class="text-[10px] tracking-luxe uppercase mt-3 text-graphite/60 step-label">Verified & Shipped</div>
+          <div class="text-[11px] text-graphite/50 mt-1 step-sub">to your address</div>
+        </div>
+        <div class="escrow-step text-center" data-step="3">
+          <div class="step-dot w-12 h-12 mx-auto rounded-full border-2 border-graphite/20 bg-bone flex items-center justify-center transition-all">
+            <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+          </div>
+          <div class="text-[10px] tracking-luxe uppercase mt-3 text-graphite/60 step-label">Funds Released</div>
+          <div class="text-[11px] text-graphite/50 mt-1 step-sub">to seller</div>
+        </div>
+      </div>
+
+      <!-- Current step detail -->
+      <div class="glass mt-8 p-5" id="escrowDetail">
+        <div class="text-[10px] tracking-luxe uppercase text-gold-deep mb-2">Step <span id="escrowStepNum">1</span> of 4</div>
+        <div class="serif text-2xl mb-2" id="escrowDetailTitle">Payment Held by Commy</div>
+        <p class="text-[13px] text-graphite/70 leading-relaxed" id="escrowDetailText">Your €6,850 has been received and is held safely in Commy's bonded escrow account. The seller has been notified to dispatch the piece to our authentication atelier within 72 hours.</p>
+        <div class="mt-4 flex items-center gap-4 text-[11px] text-graphite/60">
+          <span class="flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i> Funds insured by Lloyd's of London</span>
+          <span class="flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> Estimated completion: 5-7 days</span>
+        </div>
+      </div>
+
+      <div class="mt-6 flex items-center justify-between gap-3">
+        <button class="btn-ghost px-5 py-3" onclick="escrowBack()" id="escrowBackBtn"><i data-lucide="chevron-left" class="w-3 h-3 inline -mt-0.5"></i> Back</button>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-gold-deep" data-pip="0"></span>
+          <span class="w-2 h-2 rounded-full bg-graphite/20" data-pip="1"></span>
+          <span class="w-2 h-2 rounded-full bg-graphite/20" data-pip="2"></span>
+          <span class="w-2 h-2 rounded-full bg-graphite/20" data-pip="3"></span>
+        </div>
+        <button class="btn-ink px-5 py-3" onclick="escrowNext()" id="escrowNextBtn">Next Step <i data-lucide="chevron-right" class="w-3 h-3 inline -mt-0.5"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<script>
+  // Init icons
+  function refreshIcons() {
+    if (window.lucide) lucide.createIcons();
+  }
+  refreshIcons();
+
+  // ============== FILTER LOGIC ==============
+  const activeFilters = {
+    brand: new Set(['Chanel']),
+    condition: new Set(['Excellent']),
+    auth: new Set(['Verified Only']),
+    size: new Set(['Medium']),
+    price: 8500,
+  };
+
+  function renderActiveFilters() {
+    const pills = document.getElementById('activePills');
+    const all = [
+      ...[...activeFilters.brand].map(v => ({k:'brand', v})),
+      ...[...activeFilters.condition].map(v => ({k:'condition', v})),
+      ...[...activeFilters.auth].map(v => ({k:'auth', v})),
+      ...[...activeFilters.size].map(v => ({k:'size', v})),
+    ];
+    document.getElementById('activeCount').textContent = `(${all.length})`;
+    if (all.length === 0) {
+      pills.innerHTML = '<span class="text-[11px] text-graphite/50 italic">None — refine to begin</span>';
+    } else {
+      pills.innerHTML = all.map(f =>
+        `<button onclick="removeFilter('${f.k}','${f.v}')" class="text-[10px] tracking-luxe uppercase bg-ink text-bone px-2.5 py-1 rounded-full inline-flex items-center gap-1.5 hover:bg-gold-deep transition">
+          ${f.v} <span class="opacity-60">×</span>
+        </button>`
+      ).join('');
+    }
+    // Update simulated result count
+    const base = 2847;
+    const reduction = all.length * 287;
+    const count = Math.max(8, base - reduction - Math.floor((10000 - activeFilters.price) * 0.05));
+    document.getElementById('resultCount').textContent = count.toLocaleString();
+  }
+
+  function removeFilter(kind, value) {
+    activeFilters[kind].delete(value);
+    // sync UI inputs
+    document.querySelectorAll(`[data-filter="${kind}"]`).forEach(el => {
+      const val = el.value || el.dataset.value;
+      if (val === value) {
+        if (el.type === 'checkbox') el.checked = false;
+        else el.setAttribute('aria-pressed', 'false');
+      }
+    });
+    renderActiveFilters();
+  }
+
+  // Checkboxes
+  document.querySelectorAll('input.filter-input').forEach(input => {
+    input.addEventListener('change', () => {
+      const kind = input.dataset.filter;
+      const val = input.value;
+      if (input.checked) activeFilters[kind].add(val);
+      else activeFilters[kind].delete(val);
+      renderActiveFilters();
+    });
+  });
+
+  // Chips (condition + size)
+  document.querySelectorAll('button.chip[data-filter]').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const pressed = chip.getAttribute('aria-pressed') === 'true';
+      const kind = chip.dataset.filter;
+      const val = chip.dataset.value;
+      chip.setAttribute('aria-pressed', String(!pressed));
+      if (!pressed) activeFilters[kind].add(val);
+      else activeFilters[kind].delete(val);
+      renderActiveFilters();
+    });
+  });
+
+  function updatePrice(val) {
+    activeFilters.price = +val;
+    document.getElementById('priceMaxLabel').textContent = '€' + (+val).toLocaleString();
+    renderActiveFilters();
+  }
+  function setPrice(val) {
+    document.getElementById('priceSlider').value = val;
+    updatePrice(val);
+  }
+  function clearFilters() {
+    Object.keys(activeFilters).forEach(k => {
+      if (activeFilters[k] instanceof Set) activeFilters[k].clear();
+    });
+    activeFilters.price = 10000;
+    document.getElementById('priceSlider').value = 10000;
+    document.getElementById('priceMaxLabel').textContent = '€10,000';
+    document.querySelectorAll('input.filter-input').forEach(i => i.checked = false);
+    document.querySelectorAll('button.chip[data-filter]').forEach(c => c.setAttribute('aria-pressed','false'));
+    renderActiveFilters();
+    toast('All refinements cleared');
+  }
+  function applyFilters() {
+    toast(`Showing ${document.getElementById('resultCount').textContent} pieces matching your refinements`);
+  }
+
+  // Collapse groups
+  function toggleGroup(btn) {
+    const body = btn.nextElementSibling;
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!expanded));
+    body.style.display = expanded ? 'none' : '';
+    const icon = btn.querySelector('.indicator');
+    if (icon) icon.setAttribute('data-lucide', expanded ? 'plus' : 'minus');
+    refreshIcons();
+  }
+
+  // Mobile filter toggle (simple show/hide enhancement)
+  document.getElementById('filterToggle')?.addEventListener('click', () => {
+    document.getElementById('filterPanel').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  renderActiveFilters();
+
+  // ============== OFFER MODAL ==============
+  const ASK = 6850;
+  const SELLER_FLOOR = 5950; // hidden seller minimum
+  const offerModal = document.getElementById('offerModal');
+  const escrowModal = document.getElementById('escrowModal');
+
+  function openOfferModal() {
+    document.getElementById('offerView').classList.remove('hidden');
+    document.getElementById('counterView').classList.add('hidden');
+    document.getElementById('offerAmount').value = 5500;
+    document.getElementById('offerSlider').value = 5500;
+    updateOfferUI(5500);
+    offerModal.classList.remove('hidden');
+    offerModal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+    refreshIcons();
+  }
+  function closeOfferModal() {
+    offerModal.classList.add('hidden');
+    offerModal.classList.remove('flex');
+    document.body.style.overflow = '';
+  }
+
+  function updateOfferUI(val) {
+    val = +val;
+    document.getElementById('offerSlider').value = val;
+    const diff = ASK - val;
+    const pct = ((diff / ASK) * 100).toFixed(1);
+    document.getElementById('offerDiff').textContent = `€${diff.toLocaleString()} below ask · ${pct}%`;
+
+    const icon = document.getElementById('guidanceIcon');
+    const title = document.getElementById('guidanceTitle');
+    const text = document.getElementById('guidanceText');
+    if (pct >= 30) {
+      icon.className = 'w-8 h-8 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0';
+      icon.innerHTML = '<i data-lucide="alert-triangle" class="w-4 h-4 text-red-600"></i>';
+      title.className = 'text-[12px] tracking-luxe uppercase font-medium text-red-600';
+      title.textContent = 'Likely to be Declined';
+      text.textContent = 'Offers more than 30% below ask are rarely accepted. The seller has set thresholds for serious negotiation.';
+    } else if (pct >= 15) {
+      icon.className = 'w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center flex-shrink-0';
+      icon.innerHTML = '<i data-lucide="message-circle" class="w-4 h-4 text-gold-deep"></i>';
+      title.className = 'text-[12px] tracking-luxe uppercase font-medium text-gold-deep';
+      title.textContent = 'Expect a Counter';
+      text.textContent = `Comparable Double Flaps have sold between €5,400 – €6,200. Alex is likely to counter near her floor.`;
+    } else {
+      icon.className = 'w-8 h-8 rounded-full bg-sage/10 flex items-center justify-center flex-shrink-0';
+      icon.innerHTML = '<i data-lucide="trending-up" class="w-4 h-4 text-sage"></i>';
+      title.className = 'text-[12px] tracking-luxe uppercase font-medium text-sage';
+      title.textContent = 'Strong Offer';
+      text.textContent = 'This is within the typical acceptance range. High likelihood of approval within 24h.';
+    }
+    refreshIcons();
+  }
+  function syncOffer(val) { document.getElementById('offerAmount').value = val; updateOfferUI(val); }
+  function quickOffer(val) { syncOffer(val); document.getElementById('offerAmount').value = val; }
+
+  function submitOffer() {
+    const offer = +document.getElementById('offerAmount').value;
+    if (offer >= ASK) {
+      toast('Offer accepted! Proceeding to escrow…');
+      closeOfferModal();
+      setTimeout(openCheckout, 600);
+      return;
+    }
+    if (offer >= SELLER_FLOOR) {
+      // Accepted directly
+      toast(`Alex accepted your offer of €${offer.toLocaleString()}!`);
+      closeOfferModal();
+      setTimeout(openCheckout, 700);
+      return;
+    }
+    // Counter-offer logic — somewhere between offer and ask, closer to seller floor
+    const counter = Math.min(ASK, Math.max(SELLER_FLOOR, Math.round((offer + SELLER_FLOOR + 200) / 2 / 50) * 50));
+    document.getElementById('offerView').classList.add('hidden');
+    const cv = document.getElementById('counterView');
+    cv.classList.remove('hidden');
+    document.getElementById('counterYou').textContent = '€' + offer.toLocaleString();
+    document.getElementById('counterAmount').textContent = '€' + counter.toLocaleString();
+    document.getElementById('counterInline').textContent = '€' + counter.toLocaleString();
+    cv.dataset.counter = counter;
+
+    // Tailor copy by aggressiveness
+    const pct = ((ASK - offer) / ASK) * 100;
+    if (pct > 30) {
+      document.getElementById('counterTitle').textContent = 'Offer Declined — Counter Issued';
+      document.getElementById('counterIntro').textContent = 'Your offer was below Alex\'s threshold. She has issued a firm counter.';
+    } else {
+      document.getElementById('counterTitle').textContent = 'Counter-Offer Received';
+      document.getElementById('counterIntro').textContent = 'Alex appreciates serious buyers and has come down on her ask.';
+    }
+    refreshIcons();
+  }
+
+  function counterAction(action) {
+    const counter = +document.getElementById('counterView').dataset.counter;
+    if (action === 'accept') {
+      toast(`Deal sealed at €${counter.toLocaleString()}. Funds moving to escrow.`);
+      closeOfferModal();
+      setTimeout(openCheckout, 700);
+    } else if (action === 'rebid') {
+      document.getElementById('counterView').classList.add('hidden');
+      document.getElementById('offerView').classList.remove('hidden');
+      const newStart = Math.round((counter - 200) / 50) * 50;
+      document.getElementById('offerAmount').value = newStart;
+      updateOfferUI(newStart);
+    } else {
+      toast('Offer withdrawn. The piece remains in the vault.');
+      closeOfferModal();
+    }
+  }
+
+  // ============== ESCROW ==============
+  let escrowStep = 0;
+  const escrowSteps = [
+    { title: 'Payment Held by Commy', text: 'Your €6,850 has been received and is held safely in Commy\'s bonded escrow account. The seller has been notified to dispatch the piece to our authentication atelier within 72 hours.' },
+    { title: 'Item Sent to Authenticator', text: 'Alex has shipped the piece via insured carrier. It is en route to our Milan atelier where our master leather specialist will inspect every stitch, hardware serial, and provenance document.' },
+    { title: 'Item Approved & Shipped to You', text: 'Authentication passed with a 9.2/10 grade. The piece has been professionally conditioned, packaged in Commy signature presentation, and dispatched to your address via insured courier.' },
+    { title: 'Funds Released to Seller', text: 'You have confirmed receipt (or the 48-hour inspection window has elapsed). Funds — minus the platform fee — have been released to Alex\'s wallet, less than 7 days after purchase.' },
+  ];
+
+  function openCheckout() {
+    escrowStep = 0;
+    renderEscrow();
+    escrowModal.classList.remove('hidden');
+    escrowModal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+    refreshIcons();
+  }
+  function closeEscrow() {
+    escrowModal.classList.add('hidden');
+    escrowModal.classList.remove('flex');
+    document.body.style.overflow = '';
+  }
+  function renderEscrow() {
+    document.getElementById('escrowFill').style.width = ((escrowStep + 1) / 4 * 100) + '%';
+    document.getElementById('escrowStepNum').textContent = escrowStep + 1;
+    document.getElementById('escrowDetailTitle').textContent = escrowSteps[escrowStep].title;
+    document.getElementById('escrowDetailText').textContent = escrowSteps[escrowStep].text;
+
+    document.querySelectorAll('.escrow-step').forEach((el, i) => {
+      const dot = el.querySelector('.step-dot');
+      const label = el.querySelector('.step-label');
+      const sub = el.querySelector('.step-sub');
+      if (i < escrowStep) {
+        dot.className = 'step-dot w-12 h-12 mx-auto rounded-full border-2 border-gold bg-gold text-bone flex items-center justify-center transition-all';
+        label.className = 'text-[10px] tracking-luxe uppercase mt-3 text-ink step-label font-medium';
+      } else if (i === escrowStep) {
+        dot.className = 'step-dot w-12 h-12 mx-auto rounded-full border-2 border-ink bg-ink text-bone flex items-center justify-center transition-all verified-pulse';
+        label.className = 'text-[10px] tracking-luxe uppercase mt-3 text-ink step-label font-medium';
+      } else {
+        dot.className = 'step-dot w-12 h-12 mx-auto rounded-full border-2 border-graphite/20 bg-bone flex items-center justify-center transition-all';
+        label.className = 'text-[10px] tracking-luxe uppercase mt-3 text-graphite/60 step-label';
+      }
+    });
+
+    document.querySelectorAll('[data-pip]').forEach((el,i) => {
+      el.className = `w-2 h-2 rounded-full ${i === escrowStep ? 'bg-gold-deep' : i < escrowStep ? 'bg-gold-soft' : 'bg-graphite/20'}`;
+    });
+
+    document.getElementById('escrowBackBtn').style.visibility = escrowStep === 0 ? 'hidden' : 'visible';
+    const nextBtn = document.getElementById('escrowNextBtn');
+    if (escrowStep === 3) {
+      nextBtn.innerHTML = 'Complete <i data-lucide="check" class="w-3 h-3 inline -mt-0.5"></i>';
+    } else {
+      nextBtn.innerHTML = 'Next Step <i data-lucide="chevron-right" class="w-3 h-3 inline -mt-0.5"></i>';
+    }
+    refreshIcons();
+  }
+  function escrowNext() {
+    if (escrowStep < 3) { escrowStep++; renderEscrow(); }
+    else {
+      closeEscrow();
+      toast('Transaction complete. Welcome to The Vault.');
+    }
+  }
+  function escrowBack() {
+    if (escrowStep > 0) { escrowStep--; renderEscrow(); }
+  }
+
+  // ============== TABS ==============
+  function showTab(name) {
+    if (name === 'dashboard') {
+      document.getElementById('dashboard-section').scrollIntoView({behavior:'smooth', block:'start'});
+      return;
+    }
+    document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.tab === name)));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('hidden', p.dataset.panel !== name));
+  }
+
+  // ============== BEFORE/AFTER (UGC) ==============
+  document.getElementById('toggleBA').addEventListener('click', () => {
+    const after = document.getElementById('afterCard');
+    after.style.opacity = '0.4';
+    setTimeout(() => {
+      after.style.opacity = '1';
+      after.classList.add('pop');
+      setTimeout(() => after.classList.remove('pop'), 400);
+      toast('Atelier optimization complete · 4 enhancements applied');
+    }, 600);
+  });
+
+  // ============== TOAST ==============
+  let toastTimer;
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  // ============== ESC TO CLOSE ==============
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      if (!offerModal.classList.contains('hidden')) closeOfferModal();
+      if (!escrowModal.classList.contains('hidden')) closeEscrow();
+    }
+  });
+
+  // Close on backdrop
+  [offerModal, escrowModal].forEach(m => {
+    m.addEventListener('click', e => {
+      if (e.target === m) {
+        if (m === offerModal) closeOfferModal();
+        else closeEscrow();
+      }
+    });
+  });
+
+  // Reveal on scroll
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Refresh icons one more time after all dynamic content
+  setTimeout(refreshIcons, 100);
+</script>
+
+</body>
+</html>
